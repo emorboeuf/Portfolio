@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Evan MORBOEUF — Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #fafaf8;
+      --white: #ffffff;
+      --ink: #1a1a18;
+      --ink-light: #5a5a55;
+      --ink-faint: #a8a8a0;
+      --accent: #1e4fd8;
+      --accent-light: #eef1fc;
+      --border: #e8e8e2;
+      --serif: 'DM Serif Display', Georgia, serif;
+      --sans: 'DM Sans', system-ui, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(250,250,248,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 5%;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      color: var(--ink);
+    }
+
+    .nav-links { display: flex; gap: 2.5rem; }
+    .nav-links a {
+      font-size: 0.88rem;
+      color: var(--ink-light);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ─── HERO ─── */
+    .hero {
+      padding-top: 64px;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 5fr 4fr;
+      align-items: center;
+      padding-left: 5%;
+      padding-right: 5%;
+      gap: 4rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 0.3rem 0.9rem;
+      border-radius: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .hero h1 {
+      font-family: var(--serif);
+      font-size: clamp(3.2rem, 6vw, 5.5rem);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 em { font-style: italic; color: var(--accent); }
+
+    .hero-desc {
+      font-size: 1.05rem;
+      color: var(--ink-light);
+      max-width: 480px;
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+      font-weight: 300;
+    }
+
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.8rem;
+      font-family: var(--sans);
+      font-size: 0.88rem;
+      font-weight: 500;
+      text-decoration: none;
+      border-radius: 3px;
+      transition: all 0.2s;
+    }
+    .btn-primary { background: var(--accent); color: #fff; border: 1px solid var(--accent); }
+    .btn-primary:hover { background: #1640b8; }
+    .btn-secondary { background: transparent; color: var(--ink); border: 1px solid var(--border); }
+    .btn-secondary:hover { border-color: var(--ink-light); }
+
+    .hero-right {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .hero-stat {
+      background: var(--white);
+      border: 1px solid var(--border);
+      padding: 1.5rem 2rem;
+    }
+    .hero-stat:not(:last-child) { border-bottom: none; }
+    .stat-num { font-family: var(--serif); font-size: 2.2rem; color: var(--ink); line-height: 1; }
+    .stat-label { font-size: 0.82rem; color: var(--ink-faint); margin-top: 0.3rem; }
+
+    /* ─── SECTIONS ─── */
+    section { padding: 6rem 5%; border-bottom: 1px solid var(--border); }
+
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 3.5rem;
+    }
+    .section-label span {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+
+    /* ─── ABOUT ─── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 5rem;
+      align-items: start;
+    }
+    .about-text p {
+      color: var(--ink-light);
+      font-size: 1.05rem;
+      line-height: 1.85;
+      font-weight: 300;
+      margin-bottom: 1.2rem;
+    }
+    .about-text .section-title { margin-bottom: 2rem; }
+
+    .skills-group { margin-bottom: 2rem; }
+    .skills-group-title {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--ink-faint);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+    .skills-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .tag {
+      font-size: 0.82rem;
+      color: var(--ink-light);
+      background: var(--white);
+      border: 1px solid var(--border);
+      padding: 0.3rem 0.8rem;
+      border-radius: 3px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .tag:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ─── FORMATION & EXPERIENCES (table layout) ─── */
+    .list-row {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 2rem;
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+    }
+    .list-row:first-child { border-top: 1px solid var(--border); }
+
+    .row-date {
+      font-size: 0.84rem;
+      color: var(--ink-faint);
+      padding-top: 0.1rem;
+      line-height: 1.6;
+    }
+
+    .row-title {
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      color: var(--ink);
+      margin-bottom: 0.25rem;
+      letter-spacing: -0.01em;
+    }
+    .row-sub {
+      font-size: 0.88rem;
+      color: var(--ink-light);
+      margin-bottom: 0.5rem;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 500;
+      padding: 0.2rem 0.7rem;
+      border-radius: 2rem;
+    }
+    .badge-blue { color: var(--accent); background: var(--accent-light); }
+    .badge-gray { color: var(--ink-faint); border: 1px solid var(--border); }
+
+    .missions {
+      list-style: none;
+      margin-top: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .missions li {
+      font-size: 0.9rem;
+      color: var(--ink-light);
+      font-weight: 300;
+      padding-left: 1.2rem;
+      position: relative;
+      line-height: 1.6;
+    }
+    .missions li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--ink-faint);
+      font-size: 0.8rem;
+    }
+
+    /* ─── CONTACT ─── */
+    .contact-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+    .contact-text .section-title { margin-bottom: 1rem; }
+    .contact-text p {
+      color: var(--ink-light);
+      font-size: 1rem;
+      line-height: 1.8;
+      font-weight: 300;
+      margin-bottom: 1.5rem;
+    }
+    .contact-text .contact-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-top: 2rem;
+    }
+    .contact-meta-item { font-size: 0.88rem; color: var(--ink-faint); }
+    .contact-meta-item a { color: var(--accent); text-decoration: none; }
+    .contact-meta-item a:hover { text-decoration: underline; }
+
+    /* Form */
+    .contact-form { background: var(--white); border: 1px solid var(--border); padding: 2.5rem; }
+    .form-group { margin-bottom: 1.4rem; }
+    .form-group label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--ink-faint);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font-family: var(--sans);
+      font-size: 0.92rem;
+      color: var(--ink);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      outline: none;
+      transition: border-color 0.2s;
+      resize: none;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus { border-color: var(--accent); background: var(--white); }
+    .form-group textarea { height: 130px; }
+    .form-submit {
+      width: 100%;
+      padding: 0.85rem;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 3px;
+      transition: background 0.2s;
+    }
+    .form-submit:hover { background: #1640b8; }
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+      color: #1a7a4a;
+      background: #edfaf3;
+      border: 1px solid #b2e8cc;
+      border-radius: 3px;
+      font-size: 0.92rem;
+      margin-top: 1rem;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      padding: 2rem 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--ink-faint);
+    }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .hero-left > * { opacity: 0; animation: fadeUp 0.55s ease forwards; }
+    .hero-left > *:nth-child(1) { animation-delay: 0.05s; }
+    .hero-left > *:nth-child(2) { animation-delay: 0.15s; }
+    .hero-left > *:nth-child(3) { animation-delay: 0.25s; }
+    .hero-left > *:nth-child(4) { animation-delay: 0.35s; }
+    .hero-right { opacity: 0; animation: fadeUp 0.55s 0.45s ease forwards; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 860px) {
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; padding: 6rem 1.5rem 3rem; min-height: auto; }
+      .hero-right { display: grid; grid-template-columns: 1fr 1fr; }
+      .hero-stat:not(:last-child) { border-bottom: 1px solid var(--border); }
+      section { padding: 4rem 1.5rem; }
+      .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .list-row { grid-template-columns: 1fr; gap: 0.4rem; }
+      .contact-wrapper { grid-template-columns: 1fr; gap: 2.5rem; }
+      footer { flex-direction: column; gap: 0.4rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-logo">Evan Morboeuf</div>
+    <div class="nav-links">
+      <a href="#about">À propos</a>
+      <a href="#formation">Formation</a>
+      <a href="#experiences">Expériences</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <div class="hero-tag">Actuellement en alternance</div>
+      <h1>Evan<br><em>Morboeuf</em></h1>
+      <p class="hero-desc">
+        Apprenti en BTS SIO option SISR, passionné par l'administration des systèmes et réseaux. Curieux et polyvalent, avec une solide expérience terrain acquise lors de plusieurs stages dans divers environnements.
+      </p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn btn-primary">Me contacter</a>
+        <a href="#experiences" class="btn btn-secondary">Mes expériences</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-stat">
+        <div class="stat-num">7</div>
+        <div class="stat-label">Expériences professionnelles</div>
+      </div>
+      <div class="hero-stat">
+        <div class="stat-num">BTS SIO</div>
+        <div class="stat-label">Option SISR — en apprentissage</div>
+      </div>
+      <div class="hero-stat">
+        <div class="stat-num">SISR</div>
+        <div class="stat-label">Spécialité Systèmes & Réseaux</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- À PROPOS -->
+  <section id="about">
+    <div class="section-label"><span>À propos</span></div>
+    <div class="about-grid">
+      <div class="about-text">
+        <h2 class="section-title">Administrateur<br><em style="font-style:italic;color:var(--accent)">systèmes & réseaux</em><br>en devenir</h2>
+        <p>Je m'appelle Evan MORBOEUF. Depuis septembre 2024, je prépare un BTS SIO option SISR en apprentissage. Mon parcours m'a conduit dans des environnements très variés : secteur militaire, collectivités territoriales, entreprises privées et commerce spécialisé.</p>
+        <p>J'ai eu l'occasion de travailler sur l'administration de serveurs, la gestion de parc informatique avec GLPI, le support helpdesk, et même la création de sites web. Cette polyvalence me permet d'aborder les problématiques IT de façon globale.</p>
+      </div>
+      <div>
+        <div class="skills-group">
+          <div class="skills-group-title">Systèmes & Réseaux</div>
+          <div class="skills-tags">
+            <span class="tag">Administration réseau</span>
+            <span class="tag">Windows Server</span>
+            <span class="tag">Active Directory</span>
+            <span class="tag">Administration serveurs</span>
+            <span class="tag">Infrastructure réseau</span>
+            <span class="tag">Image disque</span>
+          </div>
+        </div>
+        <div class="skills-group">
+          <div class="skills-group-title">Support & Outils</div>
+          <div class="skills-tags">
+            <span class="tag">GLPI</span>
+            <span class="tag">Helpdesk</span>
+            <span class="tag">Gestion de parc</span>
+            <span class="tag">Diagnostic matériel</span>
+          </div>
+        </div>
+        <div class="skills-group">
+          <div class="skills-group-title">Développement & Design</div>
+          <div class="skills-tags">
+            <span class="tag">HTML / CSS</span>
+            <span class="tag">Adobe Photoshop</span>
+            <span class="tag">Illustrator</span>
+            <span class="tag">InDesign</span>
+            <span class="tag">After Effects</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORMATION -->
+  <section id="formation">
+    <div class="section-label"><span>Formation</span></div>
+    <h2 class="section-title" style="margin-bottom:3rem">Parcours scolaire</h2>
+
+    <div class="list-row">
+      <div class="row-date">Depuis sept. 2024</div>
+      <div>
+        <div class="row-title">BTS SIO — option SISR</div>
+        <div class="row-sub">En apprentissage</div>
+        <span class="badge badge-blue">En cours</span>
+      </div>
+    </div>
+
+    <div class="list-row">
+      <div class="row-date">Sept. 2021 – 2024</div>
+      <div>
+        <div class="row-title">Bac Pro Systèmes Numériques</div>
+        <div class="row-sub">Option Réseaux Informatiques et Systèmes Communicants — Lycée Pasteur Mont Roland, Dole</div>
+      </div>
+    </div>
+
+    <div class="list-row">
+      <div class="row-date">2017 – 2021</div>
+      <div>
+        <div class="row-title">Brevet des Collèges</div>
+        <div class="row-sub">Collège Maryse Bastié — Dole · Obtenu en juin 2021</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCES -->
+  <section id="experiences">
+    <div class="section-label"><span>Expériences</span></div>
+    <h2 class="section-title" style="margin-bottom:3rem">Parcours professionnel</h2>
+
+    <div class="list-row">
+      <div class="row-date">
+        Depuis sept. 2024<br>
+        <span class="badge badge-blue" style="margin-top:0.5rem">Apprentissage</span>
+      </div>
+      <div>
+        <div class="row-title">R.Bourgeois</div>
+        <div class="row-sub">Apprenti en informatique</div>
+        <ul class="missions">
+          <li>Mise en place de GLPI pour la gestion du parc informatique</li>
+          <li>Support helpdesk auprès des utilisateurs</li>
+          <li>Intégration d'ordinateurs au sein du parc</li>
+          <li>Tests de restauration de serveur</li>
+          <li>Administration réseau</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="list-row">
+      <div class="row-date">
+        Nov – Déc 2023<br>Mars – Avr 2024<br>
+        <span class="badge badge-gray" style="margin-top:0.5rem">Stage</span>
+      </div>
+      <div>
+        <div class="row-title">Cyber Cave — Dole</div>
+        <div class="row-sub">Stagiaire</div>
+        <ul class="missions">
+          <li>Diagnostics et réparations matérielles</li>
+          <li>Vente d'ordinateurs et de téléphones</li>
+          <li>Gestion des stocks</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="list-row">
+      <div class="row-date">
+        2 mai – 2 juin 2023<br>
+        <span class="badge badge-gray" style="margin-top:0.5rem">Stage</span>
+      </div>
+      <div>
+        <div class="row-title">CIRISI — 511ᵉ Régiment d'Auxonne</div>
+        <div class="row-sub">Stagiaire</div>
+        <ul class="missions">
+          <li>Administration de serveurs en environnement militaire</li>
+          <li>Application d'images disque sur le parc informatique</li>
+          <li>Gestion des infrastructures et des réseaux</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="list-row">
+      <div class="row-date">
+        3 – 27 janv. 2023<br>
+        <span class="badge badge-gray" style="margin-top:0.5rem">Stage</span>
+      </div>
+      <div>
+        <div class="row-title">King Jouet — École Valentin</div>
+        <div class="row-sub">Stagiaire</div>
+        <ul class="missions">
+          <li>Création d'un site internet en HTML &amp; CSS</li>
+          <li>Gestion des stocks sur informatique</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="list-row">
+      <div class="row-date">
+        30 mai – 24 juin 2022<br>
+        <span class="badge badge-gray" style="margin-top:0.5rem">Stage</span>
+      </div>
+      <div>
+        <div class="row-title">Kev Elec — Authume</div>
+        <div class="row-sub">Stagiaire</div>
+        <ul class="missions">
+          <li>Travail en collaboration avec les électriciens</li>
+          <li>Élaboration de devis</li>
+          <li>Installations électriques chez les particuliers</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="list-row">
+      <div class="row-date">
+        6 – 17 déc. 2021<br>
+        <span class="badge badge-gray" style="margin-top:0.5rem">Stage</span>
+      </div>
+      <div>
+        <div class="row-title">Conseil Départemental du Doubs — Besançon</div>
+        <div class="row-sub">Stagiaire</div>
+        <ul class="missions">
+          <li>Installation de postes PC dans les services administratifs</li>
+          <li>Découverte des logiciels internes de la collectivité</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="list-row">
+      <div class="row-date">
+        8 – 22 janv. 2021<br>
+        <span class="badge badge-gray" style="margin-top:0.5rem">Stage</span>
+      </div>
+      <div>
+        <div class="row-title">Chopard Automobile — Besançon</div>
+        <div class="row-sub">Stagiaire</div>
+        <ul class="missions">
+          <li>Collaboration avec l'équipe d'infographistes</li>
+          <li>Réalisation d'un poster de présentation de l'entreprise</li>
+          <li>Prise en main d'Adobe Photoshop, Illustrator, InDesign et After Effects</li>
+        </ul>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="section-label"><span>Contact</span></div>
+    <div class="contact-wrapper">
+      <div class="contact-text">
+        <h2 class="section-title">Parlons de votre projet</h2>
+        <p>Je suis ouvert à toute opportunité : alternance, stage, ou échange autour des métiers du réseau et des systèmes. N'hésitez pas à me contacter via LinkedIn ou via le formulaire.</p>
+        <div class="contact-meta">
+          <div class="contact-meta-item">Formation : BTS SIO — option SISR (apprentissage)</div>
+          <div class="contact-meta-item"><a href="https://www.linkedin.com/in/evan-morboeuf-59921230b/" target="_blank">Voir mon profil LinkedIn →</a></div>
+        </div>
+      </div>
+      <div class="contact-form">
+        <form id="contact-form" action="https://formspree.io/f/mqedgrqv" method="POST">
+          <div class="form-group">
+            <label for="name">Nom</label>
+            <input type="text" id="name" name="name" placeholder="Votre nom" required />
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="votre@email.com" required />
+          </div>
+          <div class="form-group">
+            <label for="subject">Objet</label>
+            <input type="text" id="subject" name="subject" placeholder="Objet de votre message" />
+          </div>
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" placeholder="Votre message..." required></textarea>
+          </div>
+          <button type="submit" class="form-submit">Envoyer le message</button>
+          <div class="form-success" id="form-success">✓ Message envoyé avec succès ! Je vous répondrai rapidement.</div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>© 2025 — Evan MORBOEUF</span>
+    <span>BTS SIO SISR · Apprenti en informatique</span>
+  </footer>
+
+  <script>
+    const form = document.getElementById('contact-form');
+    const success = document.getElementById('form-success');
+    if (form) {
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const btn = form.querySelector('.form-submit');
+        btn.textContent = 'Envoi en cours...';
+        btn.disabled = true;
+        const data = new FormData(form);
+        const response = await fetch(form.action, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } });
+        if (response.ok) {
+          form.reset();
+          success.style.display = 'block';
+          btn.textContent = 'Envoyer le message';
+          btn.disabled = false;
+        } else {
+          btn.textContent = 'Erreur, réessayez';
+          btn.disabled = false;
+        }
+      });
+    }
+  </script>
+</body>
+</html>
