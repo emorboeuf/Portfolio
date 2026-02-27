@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Page principale -->
+  <url>
+    <loc>https://emorboeuf.github.io/Portfolio/</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Section À propos -->
+  <url>
+    <loc>https://emorboeuf.github.io/Portfolio/#about</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Section Formation -->
+  <url>
+    <loc>https://emorboeuf.github.io/Portfolio/#formation</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Section Expériences -->
+  <url>
+    <loc>https://emorboeuf.github.io/Portfolio/#experiences</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Section Contact -->
+  <url>
+    <loc>https://emorboeuf.github.io/Portfolio/#contact</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+</urlset>
