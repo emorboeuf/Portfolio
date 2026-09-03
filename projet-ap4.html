@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projet AP4 - Evan MORBOEUF</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  
+  <style>
+    /* On reprend exactement tes variables et ton style global */
+    :root {
+      --bg: #fafaf8; --white: #ffffff; --ink: #1a1a18; --ink-light: #5a5a55;
+      --ink-faint: #a8a8a0; --accent: #1e4fd8; --accent-light: #eef1fc; --border: #e8e8e2;
+      --serif: 'DM Serif Display', Georgia, serif; --sans: 'DM Sans', system-ui, sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+
+    /* Navigation simplifiée avec bouton retour */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(250,250,248,0.92); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); padding: 0 5%; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo { font-family: var(--serif); font-size: 1.1rem; color: var(--ink); }
+    .btn-back { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.88rem; color: var(--accent); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+    .btn-back:hover { color: #1640b8; }
+
+    /* Conteneur de la page projet */
+    .project-page { padding: 120px 5% 6rem 5%; max-width: 900px; margin: 0 auto; }
+    
+    .project-header { margin-bottom: 3rem; }
+    .project-header h1 { font-family: var(--serif); font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1.1; margin-bottom: 1rem; letter-spacing: -0.02em; }
+    
+    .project-tech { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem; }
+    .project-tech span { font-size: 0.8rem; color: var(--accent); background: var(--accent-light); padding: 0.3rem 0.8rem; border-radius: 2rem; font-weight: 500; }
+
+    .project-content h2 { font-family: var(--serif); font-size: 1.8rem; margin: 2.5rem 0 1rem; color: var(--ink); }
+    .project-content p { color: var(--ink-light); font-size: 1.05rem; line-height: 1.8; margin-bottom: 1.5rem; font-weight: 300; }
+    
+    .team-box { background: var(--white); border: 1px solid var(--border); padding: 1.5rem; border-radius: 3px; margin: 2rem 0; }
+    .team-box h3 { font-size: 1rem; margin-bottom: 0.5rem; color: var(--ink); }
+    .team-box p { font-size: 0.95rem; margin-bottom: 0; }
+
+    /* Documents (repris de ton index) */
+    .docs-section { margin-top: 4rem; padding-top: 3rem; border-top: 1px solid var(--border); }
+    .docs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 1rem; }
+    .doc-card { display: flex; align-items: center; gap: 1.2rem; background: var(--white); border: 1px solid var(--border); padding: 1.4rem 1.6rem; text-decoration: none; color: var(--ink); border-radius: 3px; transition: all 0.2s; }
+    .doc-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(30,79,216,0.08); }
+    .doc-icon { flex-shrink: 0; width: 42px; height: 42px; background: var(--accent-light); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+    .doc-info { flex: 1; min-width: 0; }
+    .doc-name { font-size: 0.92rem; font-weight: 500; color: var(--ink); margin-bottom: 0.2rem; }
+    .doc-dl { flex-shrink: 0; font-size: 0.8rem; color: var(--accent); font-weight: 500; }
+
+    footer { padding: 2rem 5%; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--ink-faint); border-top: 1px solid var(--border); }
+    @media (max-width: 860px) { footer { flex-direction: column; gap: 0.4rem; text-align: center; } .docs-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-logo">Evan Morboeuf</div>
+    <a href="index.html#projets" class="btn-back">← Retour au portfolio</a>
+  </nav>
+
+  <main class="project-page">
+    
+    <div class="project-header">
+      <h1>Haute Disponibilité (AP4)</h1>
+      <div class="project-tech">
+        <span>HAProxy</span> <span>pfSense</span> <span>Proxmox VE</span> <span>Debian</span> <span>MySQL 8.0</span>
+      </div>
+    </div>
+
+    <div class="project-content">
+      <h2>Le contexte et le but du projet</h2>
+      <p>
+        Dans le cadre de ma formation BTS SIO, le projet AP4 avait pour objectif de simuler le déploiement d'une infrastructure web robuste pour une entreprise. Le but principal était d'assurer la continuité de service (Haute Disponibilité) même en cas de panne d'un serveur.
+      </p>
+      <p>
+        Pour cela, nous avons dû concevoir une architecture virtualisée complète, sécuriser les accès, et mettre en place un système de répartition de charge (Load Balancing) pour absorber le trafic.
+      </p>
+
+      <div class="team-box">
+        <h3>👥 Un travail d'équipe</h3>
+        <p>Ce projet a été réalisé en groupe avec mes collaborateurs <strong>Landry Doriot</strong> et <strong>Léo Pernin</strong>. Nous nous sommes répartis les tâches pour couvrir l'ensemble de l'architecture, du réseau jusqu'à la base de données.</p>
+      </div>
+
+      <h2>Ma mission technique</h2>
+      <p>
+        Au sein de l'équipe, je me suis concentré sur la couche de distribution et de sécurité. Mes missions principales ont été :
+      </p>
+      <ul>
+        <li style="margin-bottom: 0.5rem; color: var(--ink-light); font-weight: 300;">Le déploiement et la configuration complète du répartiteur de charge <strong>HAProxy</strong>.</li>
+        <li style="margin-bottom: 0.5rem; color: var(--ink-light); font-weight: 300;">Le paramétrage des règles de routage et du pare-feu sur <strong>pfSense</strong>.</li>
+        <li style="margin-bottom: 0.5rem; color: var(--ink-light); font-weight: 300;">La rédaction des procédures techniques pour permettre à n'importe quel technicien de reproduire mon installation.</li>
+      </ul>
+    </div>
+
+    <!-- Section Documents -->
+    <div class="docs-section">
+      <h2 style="font-family: var(--serif); font-size: 1.5rem; margin-bottom: 1.5rem;">Mes procédures techniques</h2>
+      <div class="docs-grid">
+
+        <!-- Lien vers ta procédure HAProxy -->
+        <a href="https://github.com/emorboeuf/Portfolio/raw/main/Documents/Procedure-HAProxy.pdf" download class="doc-card">
+          <div class="doc-icon">🛠️</div>
+          <div class="doc-info">  
+            <div class="doc-name">Configuration HAProxy</div>
+          </div>
+          <div class="doc-dl">↓ Télécharger (PDF)</div>
+        </a>
+
+        <!-- Lien vers ta procédure pfSense (à adapter) -->
+        <a href="#" download class="doc-card">
+          <div class="doc-icon">🛡️</div>
+          <div class="doc-info">  
+            <div class="doc-name">Déploiement pfSense</div>
+          </div>
+          <div class="doc-dl">↓ Télécharger (PDF)</div>
+        </a>
+
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <span>© 2026 — Evan MORBOEUF</span>
+    <span>BTS SIO SISR · Apprenti en informatique</span>
+  </footer>
+
+</body>
+</html>
