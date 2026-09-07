@@ -53,7 +53,7 @@
       color: var(--ink);
     }
 
-    .nav-links { display: flex; gap: 2rem; }
+    .nav-links { display: flex; gap: 2.5rem; }
     .nav-links a {
       font-size: 0.88rem;
       color: var(--ink-light);
@@ -264,69 +264,6 @@
       font-size: 0.8rem;
     }
 
-    /* ─── PROJETS (Nouvelle section) ─── */
-    .projects-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 2rem;
-    }
-    .project-card {
-      background: var(--white);
-      border: 1px solid var(--border);
-      padding: 2rem;
-      border-radius: 3px;
-      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-      display: flex;
-      flex-direction: column;
-    }
-    .project-card:hover {
-      border-color: var(--accent);
-      transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(30,79,216,0.06);
-    }
-    .project-title {
-      font-family: var(--serif);
-      font-size: 1.4rem;
-      color: var(--ink);
-      margin-bottom: 0.8rem;
-      line-height: 1.2;
-    }
-    .project-tech {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      margin-bottom: 1.2rem;
-    }
-    .project-tech span {
-      font-size: 0.75rem;
-      color: var(--accent);
-      background: var(--accent-light);
-      padding: 0.2rem 0.6rem;
-      border-radius: 2rem;
-      font-weight: 500;
-    }
-    .project-desc {
-      color: var(--ink-light);
-      font-size: 0.95rem;
-      line-height: 1.7;
-      margin-bottom: 2rem;
-      flex-grow: 1;
-    }
-    .project-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.88rem;
-      color: var(--accent);
-      font-weight: 500;
-      text-decoration: none;
-      transition: gap 0.2s;
-      margin-top: auto;
-    }
-    .project-link:hover {
-      gap: 0.8rem;
-    }
-
     /* ─── CONTACT ─── */
     .contact-wrapper {
       display: grid;
@@ -489,7 +426,6 @@
       section { padding: 4rem 1.5rem; }
       .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
       .list-row { grid-template-columns: 1fr; gap: 0.4rem; }
-      .projects-grid { grid-template-columns: 1fr; }
       .contact-wrapper { grid-template-columns: 1fr; gap: 2.5rem; }
       footer { flex-direction: column; gap: 0.4rem; text-align: center; }
     }
@@ -503,17 +439,18 @@
       <a href="#about">À propos</a>
       <a href="#formation">Formation</a>
       <a href="#experiences">Expériences</a>
-      <a href="#projets">Projets</a> <a href="#documents">Documents</a>
+      <a href="#documents">Documents</a>
       <a href="#contact">Contact</a>
     </div>
   </nav>
 
+  <!-- HERO -->
   <section class="hero">
     <div class="hero-left">
       <div class="hero-tag">Disponible pour alternance</div>
       <h1>Evan<br><em>Morboeuf</em></h1>
       <p class="hero-desc">
-        Apprenti en BTS SIO option SISR, passionné par l'administration des systèmes et réseaux. Curieux et polyvalent, avec une solide expérience terrain acquise lors de plusieurs stages en entreprise.
+        Apprenti en BTS SIO option SISR, passionné par l'administration des systèmes et réseaux. Curieux et polyvalent, avec une solide expérience terrain acquise lors de plusieurs stages en entreprise et en milieu militaire.
       </p>
       <div class="hero-actions">
         <a href="#contact" class="btn btn-primary">Me contacter</a>
@@ -536,6 +473,7 @@
     </div>
   </section>
 
+  <!-- À PROPOS -->
   <section id="about">
     <div class="section-label"><span>À propos</span></div>
     <div class="about-grid">
@@ -548,9 +486,10 @@
         <div class="skills-group">
           <div class="skills-group-title">Systèmes & Réseaux</div>
           <div class="skills-tags">
-            <span class="tag">VmWare</span> <span class="tag">Windows Server</span>
+            <span class="tag">DmWare</span>
+            <span class="tag">Windows Server</span>
             <span class="tag">Active Directory</span>
-            <span class="tag">Proxmox VE</span>
+            <span class="tag">ProxMox</span>
             <span class="tag">Macrium Reflect Workstation</span>
           </div>
         </div>
@@ -559,10 +498,10 @@
           <div class="skills-tags">
             <span class="tag">GLPI</span>
             <span class="tag">Freshdesk</span>
-            <span class="tag">ESET</span>
+            <span class="tag">Eset</span>
             <span class="tag">CrowdStrike</span>
-            <span class="tag">Hornet Security</span>
-            <span class="tag">StormShield Firewall</span>
+            <span class="tag">Hornet Sécurity</span>
+              <span class="tag">StormShield firewall</span>
           </div>
         </div>
         <div class="skills-group">
@@ -570,7 +509,7 @@
           <div class="skills-tags">
             <span class="tag">Notion</span>
             <span class="tag">Obsidian</span>
-            <span class="tag">Suite Office 365</span>
+            <span class="tag">Suite office 365</span>
             <span class="tag">Gantt</span>
           </div>
         </div>
@@ -578,6 +517,7 @@
     </div>
   </section>
 
+  <!-- FORMATION -->
   <section id="formation">
     <div class="section-label"><span>Formation</span></div>
     <h2 class="section-title" style="margin-bottom:3rem">Parcours scolaire</h2>
@@ -608,6 +548,7 @@
     </div>
   </section>
 
+  <!-- EXPERIENCES -->
   <section id="experiences">
     <div class="section-label"><span>Expériences</span></div>
     <h2 class="section-title" style="margin-bottom:3rem">Parcours professionnel</h2>
@@ -726,52 +667,14 @@
 
   </section>
 
-  <section id="projets">
-    <div class="section-label"><span>Projets & Labs</span></div>
-    <h2 class="section-title" style="margin-bottom:3rem">Déploiements & Infrastructures</h2>
-    
-    <div class="projects-grid">
-      
-      <div class="project-card">
-        <h3 class="project-title">CFA EPFC (AP4)</h3>
-        <div class="project-tech">
-        </div>
-        <p class="project-desc">Mise en place d'une infrastructure réseau virtualisée pour le logiciel de gestion d'enquête du site Excellence Pro Franche-Comté</p>
-       <a href="projet-ap4.html" class="project-link">
-  Lire les détails du projet →
-</a>
-      </div>
-
-      <div class="project-card">
-        <h3 class="project-title">Infrastructure réseau pour la journée santé et citoyenneté (AP3)</h3>
-        <div class="project-tech">
-          
-        </div>
-        <p class="project-desc">Conception d'une infrastructure réseau pour un événement de santé et de citoyenneté.</p>
-       <a href="projet-ap3.html" class="project-link">
-  Lire les détails du projet →
-</a>
-      </div>
-
-      <div class="project-card">
-        <h3 class="project-title">Homelab (projet perso)</h3>
-        <div class="project-tech">
-        
-        </div>
-        <p class="project-desc">Environnement de test virtualisé dédié à ma veille technique et à l'auto-formation. Expérimentations en administration Linux, conteneurisation Docker, sécurité, et rédaction de procédures techniques.</p>
-       <a href="projet-homelab.html" class="project-link">
-  Lire les détails du projet →
-</a>
-      </div>
-
-    </div>
-  </section>
-
+  <!-- ////// DOCUMENTS \\\\\\ -->
   <section id="documents">
     <div class="section-label"><span>Documents</span></div>
     <h2 class="section-title" style="margin-bottom:3rem">Mes documents</h2>
     <div class="docs-grid">
 
+<!-- pour que le doc ce télécharge directement, remplacer \blob\ par \raw\ dans les lien du href -->
+      
       <a href="https://github.com/emorboeuf/Portfolio/raw/main/Documents/CV/CV%20EVAN%20MORBOEUF%20NC.pdf" download class="doc-card">
         <div class="doc-icon">📄</div>
         <div class="doc-info">  
@@ -780,7 +683,7 @@
         <div class="doc-dl">↓ Télécharger</div>
       </a>
 
-      <a href="https://github.com/emorboeuf/Portfolio/raw/main/Documents/Preuve%202%20veille.pdf" download class="doc-card">
+       <a href="https://github.com/emorboeuf/Portfolio/raw/main/Documents/Preuve%202%20veille.pdf" download class="doc-card">
         <div class="doc-icon">📝</div>
         <div class="doc-info">  
           <div class="doc-name">Preuve de ma veille technologique</div>
@@ -788,7 +691,7 @@
         <div class="doc-dl">↓ Télécharger</div>
       </a>
 
-      <a href="https://github.com/emorboeuf/Portfolio/raw/main/Documents/Preuve%20de%20comp%C3%A9tence%20MORBOEUF%20Evandocx.pdf" download class="doc-card">
+       <a href="https://github.com/emorboeuf/Portfolio/raw/main/Documents/Preuve%20de%20comp%C3%A9tence%20MORBOEUF%20Evandocx.pdf" download class="doc-card">
         <div class="doc-icon">📚</div>
         <div class="doc-info">  
           <div class="doc-name">Preuve de compétences</div>
@@ -796,17 +699,21 @@
         <div class="doc-dl">↓ Télécharger</div>
       </a>
 
-      <a href="https://github.com/emorboeuf/Portfolio/raw/main/Documents/Tableau%20de%20synth%C3%A8se%20-%20MORBOEUF%20Evan.pdf" download class="doc-card">
+<a href="https://github.com/emorboeuf/Portfolio/raw/main/Documents/Tableau%20de%20synth%C3%A8se%20-%20MORBOEUF%20Evan.pdf" download class="doc-card">
         <div class="doc-icon">📋</div>
         <div class="doc-info">  
-          <div class="doc-name">Tableau de synthèse</div>
+          <div class="doc-name">Tableau de sythèse</div>
         </div>
         <div class="doc-dl">↓ Télécharger</div>
       </a>
+   
 
     </div>
+   
+    </p> 
   </section>
 
+  <!-- CONTACT -->
   <section id="contact">
     <div class="section-label"><span>Contact</span></div>
     <div class="contact-wrapper">
@@ -852,6 +759,7 @@
     <span>© 2026 — Evan MORBOEUF</span>
     <span>BTS SIO SISR · Apprenti en informatique</span>
   </footer>
+
 
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>
