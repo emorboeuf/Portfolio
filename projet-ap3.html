@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Projet AP3 - Lycée Pasteur Mont-Roland - Evan MORBOEUF</title>
+  <title>Infrastructure réseau pour la journée santé et citoyenneté (AP3) - Evan MORBOEUF</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
   
   <style>
@@ -69,7 +69,7 @@
   <main class="project-page">
     
     <div class="project-header">
-      <h1>Architecture Réseau Multi-Zones (AP3)</h1>
+      <h1>Infrastructure réseau pour la journée santé et citoyenneté (AP3)</h1>
       <div class="project-tech">
         <span>MikroTik</span> <span>Proxmox VE</span> <span>Windows Server</span> <span>SQL Server</span> <span>Apache</span> <span>Nextcloud</span> <span>Active Directory</span>
       </div>
@@ -78,19 +78,19 @@
     <div class="project-content">
       <h2>Contexte du projet</h2>
       <p>
-        Chaque année, le lycée Pasteur Mont-Roland de Dole organise des "Journées santé et citoyenneté" faisant intervenir divers acteurs (associations, police, sécurité routière)[cite: 2]. La gestion de cet événement se faisait par échanges de mails et documents, une méthode chronophage et source d'erreurs[cite: 2].
+        Chaque année, le lycée Pasteur Mont-Roland de Dole organise des "Journées santé et citoyenneté" faisant intervenir divers acteurs (associations, police, sécurité routière). La gestion de cet événement se faisait par échanges de mails et documents, une méthode chronophage et source d'erreurs.
       </p>
       <p>
-        Sous la supervision de notre professeur M. PERNELLE Sébastien, l'objectif était de centraliser cette gestion[cite: 2]. Ce projet a fait l'objet d'une collaboration inter-options : les étudiants SLAM développaient les applications, tandis que mon équipe SISR était chargée de concevoir et déployer l'infrastructure réseau sécurisée pour les héberger[cite: 2].
+        Sous la supervision de notre professeur M. PERNELLE Sébastien, l'objectif était de centraliser cette gestion. Ce projet a fait l'objet d'une collaboration inter-options : les étudiants SLAM développaient les applications, tandis que mon équipe SISR était chargée de concevoir et déployer l'infrastructure réseau sécurisée pour les héberger.
       </p>
 
       <h2>Contraintes et Exigences</h2>
-      <p>Ce projet, réalisé entre octobre 2025 et janvier 2026[cite: 2], imposait un cahier des charges technique précis pour répondre aux besoins des développeurs :</p>
+      <p>Ce projet, réalisé entre octobre 2025 et janvier 2026, imposait un cahier des charges technique précis pour répondre aux besoins des développeurs :</p>
       <ul>
-        <li><strong>Environnement Windows :</strong> Mise à disposition d'un serveur Windows Server avec l'environnement .NET et SQL Server pour héberger l'application lourde d'administration[cite: 2]. L'accès devait se faire via Bureau à distance (RDP)[cite: 2].</li>
-        <li><strong>Environnement Web :</strong> Un serveur Web (Apache) supportant PHP 8.3 et ses extensions (OpenSSL, PDO, etc.) pour l'interface publique des associations, obligatoirement sécurisé en HTTPS (Port 443)[cite: 2].</li>
-        <li><strong>Hébergement Cloud :</strong> Déploiement d'une solution cloud souveraine (Nextcloud) pour sécuriser les envois de logos et documents par les associations[cite: 2].</li>
-        <li><strong>Sécurité et RGPD :</strong> Mise en place d'une politique stricte d'accès, d'authentification centralisée (Active Directory) et d'une sauvegarde régulière[cite: 2].</li>
+        <li><strong>Environnement Windows :</strong> Mise à disposition d'un serveur Windows Server avec l'environnement .NET et SQL Server pour héberger l'application lourde d'administration. L'accès devait se faire via Bureau à distance (RDP).</li>
+        <li><strong>Environnement Web :</strong> Un serveur Web (Apache) supportant PHP 8.3 et ses extensions (OpenSSL, PDO, etc.) pour l'interface publique des associations, obligatoirement sécurisé en HTTPS (Port 443).</li>
+        <li><strong>Hébergement Cloud :</strong> Déploiement d'une solution cloud souveraine (Nextcloud) pour sécuriser les envois de logos et documents par les associations.</li>
+        <li><strong>Sécurité et RGPD :</strong> Mise en place d'une politique stricte d'accès, d'authentification centralisée (Active Directory) et d'une sauvegarde régulière.</li>
       </ul>
 
       <h2>Mes missions techniques</h2>
@@ -99,21 +99,21 @@
       <ul class="task-list">
         <li>
           <strong>Routage et Sécurité (MikroTik)</strong>
-          Configuration d'un routeur MikroTik (via Winbox) pour segmenter le réseau en plusieurs zones (LAN ASIO, DMZ, BACKUP, WAN)[cite: 2]. J'ai établi les règles de pare-feu gérant les droits de communication entre les réseaux privés et internet[cite: 2].
+          Configuration d'un routeur MikroTik (via Winbox) pour segmenter le réseau en plusieurs zones (LAN ASIO, DMZ, BACKUP, WAN). J'ai établi les règles de pare-feu gérant les droits de communication entre les réseaux privés et internet.
         </li>
         <li>
           <strong>Virtualisation et Sauvegarde (Proxmox)</strong>
-          Déploiement de l'hyperviseur Proxmox hébergeant les machines virtuelles, couplé à un Proxmox Backup Server dans une zone réseau dédiée pour automatiser les sauvegardes en conformité avec le RGPD[cite: 2].
+          Déploiement de l'hyperviseur Proxmox hébergeant les machines virtuelles, couplé à un Proxmox Backup Server dans une zone réseau dédiée pour automatiser les sauvegardes en conformité avec le RGPD.
         </li>
         <li>
           <strong>Services Systèmes et Web</strong>
-          Intégration d'Active Directory pour l'authentification sur le serveur Windows, installation du SGBD SQL Server via SSMS, et déploiement du serveur Apache ainsi que de l'instance Nextcloud dans la DMZ[cite: 2].
+          Intégration d'Active Directory pour l'authentification sur le serveur Windows, installation du SGBD SQL Server via SSMS, et déploiement du serveur Apache ainsi que de l'instance Nextcloud dans la DMZ.
         </li>
       </ul>
 
       <h2>Architecture Logique</h2>
       <p>
-        L'infrastructure s'articule autour du routeur MikroTik centralisant les flux. Le réseau LAN abrite les données critiques (SQL Server, AD), la DMZ expose les services web (Apache, Nextcloud, GLPI) de façon sécurisée, et la zone Backup est isolée pour garantir l'intégrité des sauvegardes[cite: 2].
+        L'infrastructure s'articule autour du routeur MikroTik centralisant les flux. Le réseau LAN abrite les données critiques (SQL Server, AD), la DMZ expose les services web (Apache, Nextcloud, GLPI) de façon sécurisée, et la zone Backup est isolée pour garantir l'intégrité des sauvegardes.
       </p>
 
       <!-- Remplace par le nom exact de ton image (ex: schema-logique-ap3.png) -->
@@ -123,7 +123,7 @@
       <div class="team-box">
         <h3>💡 Axes d'amélioration</h3>
         <p>
-          Lors de notre soutenance, nous avons identifié deux axes d'amélioration techniques : la mise en place d'une solution automatisée comme <em>Let's Encrypt</em> pour la génération de certificats SSL (plutôt que de l'auto-signé), ainsi que le déploiement de notre propre serveur DNS au lieu de s'appuyer sur celui de l'établissement[cite: 2].
+          Lors de notre soutenance, nous avons identifié deux axes d'amélioration techniques : la mise en place d'une solution automatisée comme <em>Let's Encrypt</em> pour la génération de certificats SSL (plutôt que de l'auto-signé), ainsi que le déploiement de notre propre serveur DNS au lieu de s'appuyer sur celui de l'établissement.
         </p>
       </div>
 
