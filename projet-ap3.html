@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Infrastructure réseau pour la journée santé et citoyenneté (AP3) - Evan MORBOEUF</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  
+  <style>
+    /* =========================================
+       VARIABLES DE BASE (FOND ULTRA-LUMINEUX)
+       ========================================= */
+    :root {
+      --bg: #f8fafc; 
+      --shadow-light: #ffffff;
+      --shadow-dark: #e2e8f0; 
+      --font-main: 'Nunito', sans-serif;
+      
+      /* COULEURS TEXTE */
+      --text-main: #0f172a;  
+      --text-muted: #334155; 
+      --text-light: #64748b; 
+      
+      /* COULEUR D'ACCENTUATION */
+      --accent: #00118F;     
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body { 
+      background: var(--bg); 
+      color: var(--text-muted); 
+      font-family: var(--font-main); 
+      font-size: 16px; 
+      line-height: 1.6; 
+      -webkit-font-smoothing: antialiased; 
+    }
+
+    /* Forcer la police sur tous les titres */
+    h1, h2, h3, h4, h5, h6, .nav-logo, .doc-name {
+      font-family: var(--font-main) !important;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(248, 250, 252, 0.85);
+      backdrop-filter: blur(12px);
+      /* Centrage pour grands écrans calé sur le portfolio (1100px max) */
+      padding: 0 max(5%, calc(50vw - 550px));
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    }
+    .nav-logo { font-weight: 800; font-size: 1.3rem; color: var(--text-main); }
+    
+    .btn-back { 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 0.5rem; 
+      font-size: 0.95rem; 
+      font-weight: 800;
+      color: var(--text-muted); 
+      text-decoration: none; 
+      background: var(--bg);
+      padding: 0.6rem 1.4rem;
+      border-radius: 50px;
+      box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+      transition: all 0.2s; 
+    }
+    .btn-back:hover { color: var(--accent); transform: translateY(-2px); }
+    .btn-back:active { box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); transform: translateY(0); }
+
+    /* ─── CONTENEUR PRINCIPAL ─── */
+    /* Pour la lecture, on garde une largeur max de 900px pour éviter les lignes trop longues */
+    .project-page { 
+      padding: 120px max(5%, calc(50vw - 450px)) 6rem; 
+    }
+    
+    /* ─── EN-TÊTE DU PROJET ─── */
+    .project-header { margin-bottom: 3.5rem; }
+    .project-header h1 { 
+      font-weight: 800; 
+      font-size: clamp(2.5rem, 5vw, 3.5rem); 
+      color: var(--text-main);
+      line-height: 1.15; 
+      margin-bottom: 1.5rem; 
+      letter-spacing: -0.02em; 
+    }
+    
+    .project-tech { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 2rem; }
+    .project-tech span { 
+      font-size: 0.85rem; 
+      font-weight: 700;
+      color: var(--text-muted); 
+      background: var(--bg); 
+      padding: 0.4rem 1.2rem; 
+      border-radius: 12px; 
+      box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+    }
+
+    /* ─── CONTENU ─── */
+    .project-content h2 { 
+      font-weight: 800; 
+      font-size: 1.8rem; 
+      margin: 3rem 0 1.5rem; 
+      /* Les petits titres prennent la couleur bleue */
+      color: var(--accent); 
+    }
+    .project-content p { 
+      color: var(--text-muted); 
+      font-size: 1.05rem; 
+      line-height: 1.85; 
+      margin-bottom: 1.5rem; 
+      font-weight: 500; 
+    }
+    
+    .project-content ul:not(.task-list) { margin-bottom: 2rem; padding-left: 1.5rem; }
+    .project-content ul:not(.task-list) li { color: var(--text-muted); margin-bottom: 0.8rem; font-weight: 500; line-height: 1.7; }
+    .project-content ul:not(.task-list) li strong { color: var(--text-main); font-weight: 800; }
+    
+    /* ─── LISTE DES TÂCHES (Cartes Neumorphiques) ─── */
+    .task-list { margin-bottom: 3rem; padding-left: 0; list-style: none; display: flex; flex-direction: column; gap: 1.5rem; }
+    .task-list li { 
+      background: var(--bg); 
+      padding: 1.8rem 2rem; 
+      border-radius: 20px; 
+      box-shadow: 7px 7px 14px var(--shadow-dark), -7px -7px 14px var(--shadow-light);
+      color: var(--text-muted); 
+      font-weight: 500; 
+      position: relative;
+      overflow: hidden;
+    }
+    /* Petite barre d'accentuation sur le côté au lieu d'une bordure classique */
+    .task-list li::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 6px;
+      background: var(--accent);
+    }
+    .task-list strong { color: var(--text-main); font-weight: 800; display: block; margin-bottom: 0.5rem; font-size: 1.15rem; }
+
+    /* ─── ENCADRÉ D'ÉQUIPE / AMÉLIORATION (Creusé) ─── */
+    .team-box { 
+      background: var(--bg); 
+      padding: 2.5rem; 
+      border-radius: 24px; 
+      margin: 3rem 0; 
+      box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light);
+    }
+    /* Le petit titre de l'encadré prend aussi la couleur bleue */
+    .team-box h3 { font-size: 1.2rem; margin-bottom: 1rem; color: var(--accent); font-weight: 800; }
+    .team-box p { font-size: 1rem; margin-bottom: 0; color: var(--text-muted); }
+
+    /* ─── IMAGE ─── */
+    .project-image { 
+      width: 100%; 
+      border-radius: 16px; 
+      margin: 2.5rem 0 1.5rem; 
+      /* Effet de cadre sur l'image */
+      padding: 0.5rem;
+      background: var(--bg);
+      box-shadow: 7px 7px 14px var(--shadow-dark), -7px -7px 14px var(--shadow-light);
+    }
+    .image-caption { text-align: center; font-size: 0.9rem; color: var(--text-light); font-weight: 600; font-style: italic; margin-bottom: 3rem; }
+
+    /* ─── DOCUMENTS ─── */
+    .docs-section { margin-top: 5rem; padding-top: 4rem; border-top: 2px solid var(--shadow-dark); box-shadow: 0 -1px 0 var(--shadow-light); }
+    /* Le titre de la section documents prend aussi la couleur bleue */
+    .docs-section h2 { font-weight: 800; font-size: 1.8rem; margin-bottom: 2rem; color: var(--accent); }
+    .docs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 2rem; }
+    
+    .doc-card {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      background: var(--bg);
+      padding: 1.5rem 2rem;
+      text-decoration: none;
+      border-radius: 20px;
+      box-shadow: 7px 7px 14px var(--shadow-dark), -7px -7px 14px var(--shadow-light);
+      transition: transform 0.2s;
+    }
+    .doc-card:hover { transform: translateY(-4px); }
+    .doc-icon {
+      flex-shrink: 0;
+      width: 48px; height: 48px;
+      background: var(--bg);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+    }
+    .doc-info { flex: 1; min-width: 0; }
+    .doc-name { font-size: 1rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.2rem; }
+    .doc-dl { flex-shrink: 0; font-size: 0.85rem; color: var(--accent); font-weight: 800; }
+
+    /* ─── FOOTER ─── */
+    footer { 
+      padding: 3rem max(5%, calc(50vw - 550px));
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      font-size: 0.9rem; 
+      font-weight: 700;
+      color: var(--text-light); 
+      box-shadow: inset 0 10px 15px -10px rgba(0,0,0,0.05); 
+    }
+    
+    @media (max-width: 860px) { 
+      footer { flex-direction: column; gap: 0.8rem; text-align: center; } 
+      .docs-grid { grid-template-columns: 1fr; } 
+      .project-page { padding: 100px 1.5rem 4rem; }
+      .nav-logo { font-size: 1.1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-logo">Evan Morboeuf</div>
+    <a href="index.html#projets" class="btn-back">← Retour</a>
+  </nav>
+
+  <main class="project-page">
+    
+    <div class="project-header">
+      <h1>Infrastructure réseau pour la journée santé et citoyenneté (AP3)</h1>
+      <div class="project-tech">
+        <span>MikroTik</span> <span>Proxmox VE</span> <span>Windows Server</span> <span>SQL Server</span> <span>Apache</span> <span>Nextcloud</span> <span>Active Directory</span>
+      </div>
+    </div>
+
+    <div class="project-content">
+      <h2>Contexte du projet</h2>
+      <p>
+        Chaque année, le lycée Pasteur Mont-Roland de Dole organise des "Journées santé et citoyenneté" faisant intervenir divers acteurs (associations, police, sécurité routière). La gestion de cet événement se faisait par échanges de mails et documents, une méthode chronophage et source d'erreurs.
+      </p>
+      <p>
+        Sous la supervision de notre professeur M. PERNELLE Sébastien, l'objectif était de centraliser cette gestion. Ce projet a fait l'objet d'une collaboration inter-options : les étudiants SLAM développaient les applications, tandis que mon équipe SISR était chargée de concevoir et déployer l'infrastructure réseau sécurisée pour les héberger.
+      </p>
+
+      <h2>Contraintes et Exigences</h2>
+      <p>Ce projet, réalisé entre octobre 2025 et janvier 2026, imposait un cahier des charges technique précis pour répondre aux besoins des développeurs :</p>
+      <ul>
+        <li><strong>Environnement Windows :</strong> Mise à disposition d'un serveur Windows Server avec l'environnement .NET et SQL Server pour héberger l'application lourde d'administration. L'accès devait se faire via Bureau à distance (RDP).</li>
+        <li><strong>Environnement Web :</strong> Un serveur Web (Apache) supportant PHP 8.3 et ses extensions (OpenSSL, PDO, etc.) pour l'interface publique des associations, obligatoirement sécurisé en HTTPS (Port 443).</li>
+        <li><strong>Hébergement Cloud :</strong> Déploiement d'une solution cloud souveraine (Nextcloud) pour sécuriser les envois de logos et documents par les associations.</li>
+        <li><strong>Sécurité et RGPD :</strong> Mise en place d'une politique stricte d'accès, d'authentification centralisée (Active Directory) et d'une sauvegarde régulière.</li>
+      </ul>
+
+      <h2>Mes missions techniques</h2>
+      <p>Pour répondre à ces exigences, j'ai participé à la mise en place de l'infrastructure suivante :</p>
+      
+      <ul class="task-list">
+        <li>
+          <strong>Routage et Sécurité (MikroTik)</strong>
+          Configuration d'un routeur MikroTik (via Winbox) pour segmenter le réseau en plusieurs zones (LAN ASIO, DMZ, BACKUP, WAN). J'ai établi les règles de pare-feu gérant les droits de communication entre les réseaux privés et internet.
+        </li>
+        <li>
+          <strong>Virtualisation et Sauvegarde (Proxmox)</strong>
+          Déploiement de l'hyperviseur Proxmox hébergeant les machines virtuelles, couplé à un Proxmox Backup Server dans une zone réseau dédiée pour automatiser les sauvegardes en conformité avec le RGPD.
+        </li>
+        <li>
+          <strong>Services Systèmes et Web</strong>
+          Intégration d'Active Directory pour l'authentification sur le serveur Windows, installation du SGBD SQL Server via SSMS, et déploiement du serveur Apache ainsi que de l'instance Nextcloud dans la DMZ.
+        </li>
+      </ul>
+
+      <h2>Architecture Logique</h2>
+      <p>
+        L'infrastructure s'articule autour du routeur MikroTik centralisant les flux. Le réseau LAN abrite les données critiques (SQL Server, AD), la DMZ expose les services web (Apache, Nextcloud, GLPI) de façon sécurisée, et la zone Backup est isolée pour garantir l'intégrité des sauvegardes.
+      </p>
+
+      <!-- Remplace par le nom exact de ton image (ex: schema-logique-ap3.png) -->
+      <img src="Documents/Images/Schéma-Logique-AP3.png" alt="Schéma logique de l'infrastructure AP3" class="project-image" />
+      <p class="image-caption">Schéma logique de l'infrastructure : Segmentation en zones via routeur MikroTik</p>
+
+      <div class="team-box">
+        <h3>💡 Axes d'amélioration</h3>
+        <p>
+          Lors de notre soutenance, nous avons identifié deux axes d'amélioration techniques : la mise en place d'une solution automatisée comme <em>Let's Encrypt</em> pour la génération de certificats SSL (plutôt que de l'auto-signé), ainsi que le déploiement de notre propre serveur DNS au lieu de s'appuyer sur celui de l'établissement.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Section Documents -->
+    <div class="docs-section">
+      <h2>Mes documents techniques</h2>
+      <div class="docs-grid">
+
+        <!-- Lien vers le cahier des charges de l'AP3 -->
+        <a href="https://github.com/emorboeuf/Portfolio/raw/main/projet-ap3.html" download class="doc-card">
+          <div class="doc-icon">📋</div>
+          <div class="doc-info">  
+            <div class="doc-name">Cahier des charges (AP3)</div>
+          </div>
+          <div class="doc-dl">↓ Télécharger (PDF)</div>
+        </a>
+
+        <!-- Tu peux ajouter ici tes plans d'adressage IP ou d'autres documentations spécifiques à l'AP3 -->
+
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <span>© 2026 — Evan MORBOEUF</span>
+    <span>BTS SIO SISR · Apprenti en informatique</span>
+  </footer>
+
+</body>
+</html>
