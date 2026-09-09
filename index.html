@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="google-site-verification" content="wn9f3oqU9kbd-Th8JE-Uw2OFqaKa_LRdWTiKN36Fl0M" />
@@ -11,7 +11,7 @@
   
   <style>
     /* =========================================
-       VARIABLES DE BASE (FOND ULTRA-LUMINEUX)
+       VARIABLES DE BASE (MODE CLAIR)
        ========================================= */
     :root {
       --bg: #f8fafc; 
@@ -19,13 +19,38 @@
       --shadow-dark: #e2e8f0; 
       --font-main: 'Nunito', sans-serif;
       
-      /* COULEURS TEXTE */
       --text-main: #0f172a;  
       --text-muted: #334155; 
       --text-light: #64748b; 
       
-      /* COULEUR D'ACCENTUATION */
-      --accent: #00118F;     
+      --accent: #00118F;
+      --nav-bg: rgba(248, 250, 252, 0.85);
+
+      --bubble-bg: #ffffff;
+      --bubble-text: #00118F;
+      --avatar-eye: #f1f5f9;
+      --avatar-mouth: #334155;
+    }
+
+    /* =========================================
+       VARIABLES MODE SOMBRE
+       ========================================= */
+    [data-theme="dark"] {
+      --bg: #1e293b; 
+      --shadow-light: #28374e;
+      --shadow-dark: #141b28; 
+      
+      --text-main: #f8fafc;  
+      --text-muted: #cbd5e1; 
+      --text-light: #94a3b8; 
+      
+      --accent: #60a5fa; 
+      --nav-bg: rgba(30, 41, 59, 0.85);
+
+      --bubble-bg: #334155;
+      --bubble-text: #f8fafc;
+      --avatar-eye: #cbd5e1;
+      --avatar-mouth: #f8fafc;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -38,11 +63,13 @@
       font-size: 16px;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
-    /* Forcer la police sur tous les titres */
     h1, h2, h3, h4, h5, h6, .section-title, .project-title, .row-title, .nav-logo {
       font-family: var(--font-main) !important;
+      color: var(--text-main);
+      transition: color 0.3s ease;
     }
 
     /* ─── NAV ─── */
@@ -50,7 +77,7 @@
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 100;
-      background: rgba(248, 250, 252, 0.85);
+      background: var(--nav-bg);
       backdrop-filter: blur(12px);
       padding: 0 max(5%, calc(50vw - 550px));
       height: 70px;
@@ -58,6 +85,7 @@
       align-items: center;
       justify-content: space-between;
       box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+      transition: background 0.3s ease;
     }
 
     .nav-logo {
@@ -93,7 +121,15 @@
       display: grid;
       grid-template-columns: 1.2fr 0.8fr;
       align-items: center;
-      gap: 4rem;
+      gap: 2rem 4rem;
+    }
+
+    .hero-header {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
     }
 
     .hero-tag {
@@ -106,14 +142,105 @@
       background: var(--bg);
       padding: 0.5rem 1.2rem;
       border-radius: 50px;
-      margin-bottom: 2rem;
       box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+      transition: all 0.3s ease;
+    }
+
+    /* ─── BOUTON THEME (NEUMORPHIQUE) ─── */
+    .theme-switch {
+      position: relative;
+      display: inline-block;
+      width: 150px;
+      height: 46px;
+      cursor: pointer;
+      border-radius: 50px;
+      transition: all 0.3s ease;
+    }
+
+    .theme-switch input { display: none; }
+
+    .switch-track {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      border-radius: 50px;
+      background: var(--bg);
+      box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+      transition: background 0.4s ease, box-shadow 0.4s ease;
+      overflow: hidden;
+    }
+
+    .switch-text {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-weight: 800;
+      font-size: 0.75rem;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+
+    .day-text { left: 14px; }
+    .night-text { right: 12px; opacity: 0; }
+
+    .theme-switch input:checked + .switch-track .day-text { opacity: 0; }
+    .theme-switch input:checked + .switch-track .night-text { opacity: 1; }
+
+    .switch-handle {
+      position: absolute;
+      top: 4px;
+      right: 4px; 
+      width: 38px;
+      height: 38px;
+      background: var(--bg);
+      border-radius: 50%;
+      box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.4s ease, box-shadow 0.4s ease;
+      pointer-events: none;
+    }
+
+    .theme-switch input:checked + .switch-track .switch-handle {
+      transform: translateX(-104px); 
+    }
+
+    .switch-handle svg {
+      width: 20px;
+      height: 20px;
+      position: absolute;
+      transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .handle-sun {
+      fill: none;
+      stroke: var(--accent);
+      opacity: 1;
+      transform: rotate(0deg);
+    }
+    .handle-sun circle { fill: var(--accent); }
+
+    .handle-moon {
+      fill: var(--accent);
+      opacity: 0;
+      transform: rotate(-90deg);
+    }
+
+    .theme-switch input:checked + .switch-track .switch-handle .handle-sun {
+      opacity: 0;
+      transform: rotate(90deg);
+    }
+
+    .theme-switch input:checked + .switch-track .switch-handle .handle-moon {
+      opacity: 1;
+      transform: rotate(0deg);
     }
 
     .hero h1 {
       font-weight: 800;
       font-size: clamp(3rem, 5.5vw, 4.5rem);
-      color: var(--text-main);
       line-height: 1.1;
       letter-spacing: -0.02em;
       margin-bottom: 1.5rem;
@@ -122,7 +249,6 @@
 
     .hero-desc {
       font-size: 1.1rem;
-      color: var(--text-muted);
       max-width: 480px;
       line-height: 1.8;
       margin-bottom: 2.5rem;
@@ -161,8 +287,8 @@
     .btn-secondary:hover { color: var(--accent); transform: translateY(-2px); }
     .btn-secondary:active { box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); transform: translateY(0); }
 
-    /* --- AVATAR HERO & DIALOGUES --- */
-    .hero-avatar-wrapper {
+    /* --- AVATARS & DIALOGUES --- */
+    .hero-avatar-wrapper, .contact-avatar-wrapper {
       position: relative;
       display: flex;
       justify-content: center;
@@ -172,24 +298,21 @@
       transition: all 0.3s ease;
     }
     
-    .hero-avatar-wrapper:hover {
-      transform: scale(1.02);
-    }
+    .hero-avatar-wrapper:hover { transform: scale(1.02); }
 
-    /* Classe commune pour les bulles de dialogue */
     .speech-bubble {
       position: absolute;
       top: -30px;
       right: -30px;
-      background: #ffffff;
-      color: var(--accent);
+      background: var(--bubble-bg);
+      color: var(--bubble-text);
       padding: 12px 20px;
       border-radius: 20px;
       font-weight: 800;
       font-size: 0.95rem;
       max-width: 200px;
       text-align: center;
-      box-shadow: 4px 4px 12px rgba(0,0,0,0.08);
+      box-shadow: 4px 4px 12px rgba(0,0,0,0.15);
       opacity: 0;
       transform: translateY(15px) scale(0.9);
       transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -204,12 +327,10 @@
       left: 30px;
       border-width: 10px 10px 0;
       border-style: solid;
-      border-color: #ffffff transparent transparent transparent;
+      border-color: var(--bubble-bg) transparent transparent transparent;
     }
 
-    .avatar-container {
-      width: 320px;
-      height: 320px;
+    .avatar-container, .contact-avatar-container {
       background: var(--bg);
       border-radius: 50%;
       box-shadow: inset 12px 12px 24px var(--shadow-dark), inset -12px -12px 24px var(--shadow-light);
@@ -217,16 +338,15 @@
       align-items: center;
       justify-content: center;
       position: relative;
+      transition: all 0.3s ease;
     }
+    
+    .avatar-container { width: 320px; height: 320px; }
+    .contact-avatar-container { width: 170px; height: 170px; box-shadow: inset 8px 8px 16px var(--shadow-dark), inset -8px -8px 16px var(--shadow-light); }
 
-    #avatar-svg {
-      width: 220px;
-      height: 220px;
-      transition: transform 0.1s ease-out;
-      overflow: visible;
-    }
+    #avatar-svg { width: 220px; height: 220px; transition: transform 0.1s ease-out; overflow: visible; }
+    #contact-avatar-svg { width: 120px; height: 120px; transition: transform 0.1s ease-out; }
 
-    /* Animations du SVG Hero */
     #hero-hand {
       transform-origin: 65px 95px;
       transform: translateY(40px) rotate(30deg);
@@ -234,27 +354,13 @@
       transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
     }
 
-    #talk-mouth {
-      opacity: 0;
-      transform-origin: 50px 64px; 
-    }
+    #talk-mouth { opacity: 0; transform-origin: 50px 64px; }
     #smile { transition: opacity 0.2s; }
 
-    .hero-avatar-wrapper.is-talking .speech-bubble {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
+    .hero-avatar-wrapper.is-talking .speech-bubble { opacity: 1; transform: translateY(0) scale(1); }
     .hero-avatar-wrapper.is-talking #smile { opacity: 0; }
-    .hero-avatar-wrapper.is-talking #talk-mouth {
-      opacity: 1;
-      animation: chatter 0.15s infinite alternate; 
-    }
-
-    .hero-avatar-wrapper.is-waving #hero-hand {
-      transform: translateY(0) rotate(0deg);
-      opacity: 1;
-      animation: wave 1.5s ease-in-out 0.2s;
-    }
+    .hero-avatar-wrapper.is-talking #talk-mouth { opacity: 1; animation: chatter 0.15s infinite alternate; }
+    .hero-avatar-wrapper.is-waving #hero-hand { transform: translateY(0) rotate(0deg); opacity: 1; animation: wave 1.5s ease-in-out 0.2s; }
 
     @keyframes wave {
       0% { transform: rotate(0deg); }
@@ -270,439 +376,173 @@
       100% { transform: scaleY(0.2); }
     }
 
-    .hero-bottom {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2.5rem;
-    }
+    .hero-bottom { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; }
 
     .hero-stat {
-      background: var(--bg);
-      border-radius: 20px;
-      padding: 2rem;
+      background: var(--bg); border-radius: 20px; padding: 2rem;
       box-shadow: 7px 7px 14px var(--shadow-dark), -7px -7px 14px var(--shadow-light);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+      display: flex; flex-direction: column; justify-content: center; transition: all 0.3s ease;
     }
-    .stat-num { font-weight: 900; font-size: 2.5rem; color: var(--text-main); line-height: 1.2; margin-bottom: 0.5rem; }
-    .stat-label { font-size: 1rem; font-weight: 700; color: var(--text-light); line-height: 1.4; }
+    .stat-num { font-weight: 900; font-size: 2.5rem; color: var(--text-main); line-height: 1.2; margin-bottom: 0.5rem; transition: color 0.3s ease;}
+    .stat-label { font-size: 1rem; font-weight: 700; color: var(--text-light); line-height: 1.4; transition: color 0.3s ease;}
 
     /* ─── SECTIONS ─── */
-    section { 
-      padding: 6rem max(5%, calc(50vw - 550px)); 
-    }
+    section { padding: 6rem max(5%, calc(50vw - 550px)); }
 
-    .section-label {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 3.5rem;
-    }
-    .section-label span {
-      font-size: 0.85rem;
-      font-weight: 800;
-      color: var(--accent);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
+    .section-label { display: flex; align-items: center; gap: 1rem; margin-bottom: 3.5rem; }
+    .section-label span { font-size: 0.85rem; font-weight: 800; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; }
     .section-label::after { 
       content: ''; flex: 1; height: 2px; 
       background: var(--shadow-dark); 
       box-shadow: 0 1px 0 var(--shadow-light); 
       border-radius: 2px;
+      transition: all 0.3s ease;
     }
 
-    .section-title {
-      font-weight: 800;
-      font-size: clamp(2rem, 3.5vw, 2.5rem);
-      color: var(--text-main);
-      line-height: 1.2;
-      letter-spacing: -0.02em;
-    }
+    .section-title { font-weight: 800; font-size: clamp(2rem, 3.5vw, 2.5rem); line-height: 1.2; letter-spacing: -0.02em; }
 
     /* ─── ABOUT ─── */
-    .about-grid {
-      display: grid;
-      grid-template-columns: 3fr 2fr;
-      gap: 5rem;
-      align-items: start;
-    }
-    .about-text p {
-      color: var(--text-muted);
-      font-size: 1.05rem;
-      line-height: 1.85;
-      font-weight: 600;
-      margin-bottom: 1.2rem;
-    }
+    .about-grid { display: grid; grid-template-columns: 3fr 2fr; gap: 5rem; align-items: start; }
+    .about-text p { font-size: 1.05rem; line-height: 1.85; font-weight: 600; margin-bottom: 1.2rem; }
     .about-text .section-title { margin-bottom: 2rem; }
 
     .skills-group { margin-bottom: 2rem; }
-    .skills-group-title {
-      font-size: 0.8rem;
-      font-weight: 800;
-      color: var(--text-light);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-bottom: 1rem;
-    }
+    .skills-group-title { font-size: 0.8rem; font-weight: 800; color: var(--text-light); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem; }
     .skills-tags { display: flex; flex-wrap: wrap; gap: 0.8rem; }
     .tag {
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      background: var(--bg);
-      padding: 0.4rem 1rem;
-      border-radius: 12px;
+      font-size: 0.85rem; font-weight: 700; color: var(--text-muted); background: var(--bg);
+      padding: 0.4rem 1rem; border-radius: 12px;
       box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+      transition: all 0.3s ease;
     }
 
     /* ─── FORMATION & EXPERIENCES ─── */
     .list-row {
-      display: grid;
-      grid-template-columns: 200px 1fr;
-      gap: 2rem;
-      padding: 2rem;
-      margin-bottom: 2rem;
-      background: var(--bg);
-      border-radius: 24px;
+      display: grid; grid-template-columns: 200px 1fr; gap: 2rem; padding: 2rem; margin-bottom: 2rem;
+      background: var(--bg); border-radius: 24px;
       box-shadow: 7px 7px 14px var(--shadow-dark), -7px -7px 14px var(--shadow-light);
       align-items: start;
+      transition: all 0.3s ease;
     }
-
-    .row-date {
-      font-size: 0.9rem;
-      font-weight: 800;
-      color: var(--text-light);
-      padding-top: 0.2rem;
-      line-height: 1.6;
-    }
-
-    .row-title {
-      font-weight: 800;
-      font-size: 1.25rem;
-      color: var(--text-main);
-      margin-bottom: 0.25rem;
-    }
-    .row-sub {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      margin-bottom: 0.8rem;
-    }
+    .row-date { font-size: 0.9rem; font-weight: 800; color: var(--text-light); padding-top: 0.2rem; line-height: 1.6; }
+    .row-title { font-weight: 800; font-size: 1.25rem; margin-bottom: 0.25rem; }
+    .row-sub { font-size: 0.95rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.8rem; }
     
     .badge {
-      display: inline-block;
-      font-size: 0.75rem;
-      font-weight: 800;
-      padding: 0.3rem 0.9rem;
-      border-radius: 50px;
+      display: inline-block; font-size: 0.75rem; font-weight: 800; padding: 0.3rem 0.9rem; border-radius: 50px;
       box-shadow: 3px 3px 6px var(--shadow-dark), -3px -3px 6px var(--shadow-light);
+      transition: all 0.3s ease;
     }
     .badge-blue { color: var(--accent); }
     .badge-gray { color: var(--text-light); }
 
-    .missions {
-      list-style: none;
-      margin-top: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    .missions li {
-      font-size: 0.95rem;
-      color: var(--text-muted);
-      font-weight: 600;
-      padding-left: 1.5rem;
-      position: relative;
-    }
-    .missions li::before {
-      content: '•';
-      position: absolute;
-      left: 0;
-      color: var(--accent);
-      font-size: 1.2rem;
-      line-height: 1;
-    }
+    .missions { list-style: none; margin-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+    .missions li { font-size: 0.95rem; font-weight: 600; padding-left: 1.5rem; position: relative; }
+    .missions li::before { content: '•'; position: absolute; left: 0; color: var(--accent); font-size: 1.2rem; line-height: 1; }
 
     /* ─── PROJETS ─── */
-    .projects-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 2.5rem;
-    }
+    .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2.5rem; }
     .project-card {
-      background: var(--bg);
-      padding: 2.5rem;
-      border-radius: 24px;
+      background: var(--bg); padding: 2.5rem; border-radius: 24px;
       box-shadow: 9px 9px 16px var(--shadow-dark), -9px -9px 16px var(--shadow-light);
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.2s;
+      display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.3s ease, background 0.3s ease;
     }
     .project-card:hover { transform: translateY(-4px); }
     
-    .project-title {
-      font-weight: 800;
-      font-size: 1.3rem;
-      color: var(--text-main);
-      margin-bottom: 1rem;
-      line-height: 1.3;
-    }
-    .project-tech {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.6rem;
-      margin-bottom: 1.5rem;
-    }
+    .project-title { font-weight: 800; font-size: 1.3rem; margin-bottom: 1rem; line-height: 1.3; transition: color 0.3s ease;}
+    .project-tech { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1.5rem; }
     .project-tech span {
-      font-size: 0.75rem;
-      color: var(--text-light);
-      background: var(--bg);
-      padding: 0.3rem 0.8rem;
-      border-radius: 50px;
-      font-weight: 800;
-      box-shadow: inset 3px 3px 6px var(--shadow-dark), -3px -3px 6px var(--shadow-light);
+      font-size: 0.75rem; color: var(--text-light); background: var(--bg); padding: 0.3rem 0.8rem; border-radius: 50px; font-weight: 800;
+      box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+      transition: all 0.3s ease;
     }
-    .project-desc {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      font-weight: 600;
-      line-height: 1.7;
-      margin-bottom: 2rem;
-      flex-grow: 1;
-    }
+    .project-desc { font-size: 0.95rem; font-weight: 600; line-height: 1.7; margin-bottom: 2rem; flex-grow: 1; }
     .project-link {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      font-size: 0.9rem;
-      color: var(--accent);
-      font-weight: 800;
-      text-decoration: none;
-      background: var(--bg);
-      padding: 0.8rem;
-      border-radius: 50px;
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.9rem; color: var(--accent); font-weight: 800; text-decoration: none;
+      background: var(--bg); padding: 0.8rem; border-radius: 50px;
       box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
-      transition: all 0.2s;
-      margin-top: auto;
+      transition: all 0.2s; margin-top: auto;
     }
     .project-link:hover { color: #fff; background: var(--accent); }
     .project-link:active { box-shadow: inset 4px 4px 8px rgba(0,0,0,0.2); }
 
     /* ─── DOCUMENTS ─── */
-    .docs-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-      gap: 2rem;
-    }
+    .docs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 2rem; }
     .doc-card {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-      background: var(--bg);
-      padding: 1.5rem 2rem;
-      text-decoration: none;
-      border-radius: 20px;
+      display: flex; align-items: center; gap: 1.5rem; background: var(--bg); padding: 1.5rem 2rem; text-decoration: none; border-radius: 20px;
       box-shadow: 7px 7px 14px var(--shadow-dark), -7px -7px 14px var(--shadow-light);
-      transition: transform 0.2s;
+      transition: transform 0.2s, box-shadow 0.3s ease, background 0.3s ease;
     }
     .doc-card:hover { transform: translateY(-4px); }
     .doc-icon {
-      flex-shrink: 0;
-      width: 48px; height: 48px;
-      background: var(--bg);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
+      flex-shrink: 0; width: 48px; height: 48px; background: var(--bg); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
       box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+      transition: all 0.3s ease;
     }
     .doc-info { flex: 1; min-width: 0; }
-    .doc-name {
-      font-size: 1rem;
-      font-weight: 800;
-      color: var(--text-main);
-      margin-bottom: 0.2rem;
-    }
-    .doc-dl {
-      flex-shrink: 0;
-      font-size: 0.85rem;
-      color: var(--accent);
-      font-weight: 800;
-    }
+    .doc-name { font-size: 1rem; font-weight: 800; margin-bottom: 0.2rem; transition: color 0.3s ease;}
+    .doc-dl { flex-shrink: 0; font-size: 0.85rem; color: var(--accent); font-weight: 800; }
 
     /* ─── CONTACT ─── */
-    .contact-wrapper {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 5rem;
-      align-items: start;
-    }
-    
-    .contact-text {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
+    .contact-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+    .contact-text { display: flex; flex-direction: column; height: 100%; }
     .contact-text .section-title { margin-bottom: 1.5rem; }
-    .contact-text p {
-      color: var(--text-muted);
-      font-size: 1.05rem;
-      font-weight: 600;
-      line-height: 1.8;
-      margin-bottom: 1.5rem;
-    }
-    .contact-text .contact-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 0.8rem;
-    }
+    .contact-text p { font-size: 1.05rem; font-weight: 600; line-height: 1.8; margin-bottom: 1.5rem; }
+    .contact-text .contact-meta { display: flex; flex-direction: column; gap: 0.8rem; }
     .contact-meta-item { font-size: 0.95rem; font-weight: 700; color: var(--text-light); }
     .contact-meta-item a { color: var(--accent); text-decoration: none; }
 
-    /* Conteneur de l'avatar de contact + Bulle */
-    .contact-avatar-wrapper {
-      position: relative; /* Permet le positionnement de la bulle absolue */
-      display: flex;
-      justify-content: center;
-      margin-top: 4rem; 
-      margin-bottom: 2rem;
-    }
-
-    /* Apparition de la bulle quand le wrapper a la classe is-success */
-    .contact-avatar-wrapper.is-success .speech-bubble {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-
-    .contact-avatar-container {
-      width: 170px;
-      height: 170px;
-      background: var(--bg);
-      border-radius: 50%;
-      box-shadow: inset 8px 8px 16px var(--shadow-dark), inset -8px -8px 16px var(--shadow-light);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    #contact-avatar-svg {
-      width: 120px;
-      height: 120px;
-      transition: transform 0.1s ease-out;
-    }
+    .contact-avatar-wrapper { margin-top: 4rem; margin-bottom: 2rem; }
+    .contact-avatar-wrapper.is-success .speech-bubble { opacity: 1; transform: translateY(0) scale(1); }
 
     .contact-normal-eye, .contact-pupil, #contact-normal-mouth { transition: opacity 0.2s; }
     .contact-happy-eye, #contact-typing-mouth { opacity: 0; transition: opacity 0.2s; }
     
-    #contact-thinking-hand {
-      transform: translateY(20px) rotate(15deg);
-      opacity: 0;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    #contact-avatar-svg.is-typing #contact-thinking-hand {
-      transform: translateY(0) rotate(0deg);
-      opacity: 1;
-    }
+    #contact-thinking-hand { transform: translateY(20px) rotate(15deg); opacity: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    #contact-avatar-svg.is-typing #contact-thinking-hand { transform: translateY(0) rotate(0deg); opacity: 1; }
     #contact-avatar-svg.is-typing #contact-normal-mouth { opacity: 0; }
     #contact-avatar-svg.is-typing #contact-typing-mouth { opacity: 1; }
-
     #contact-avatar-svg.is-success .contact-normal-eye, 
     #contact-avatar-svg.is-success .contact-pupil, 
     #contact-avatar-svg.is-success #contact-normal-mouth { opacity: 0; }
     #contact-avatar-svg.is-success .contact-happy-eye { opacity: 1; }
-    #contact-avatar-svg.is-success #contact-thinking-hand {
-      transform: translateY(-15px);
-      opacity: 1;
-    }
+    #contact-avatar-svg.is-success #contact-thinking-hand { transform: translateY(-15px); opacity: 1; }
 
     .contact-card { 
-      background: var(--bg); 
-      padding: 3rem; 
-      border-radius: 24px;
+      background: var(--bg); padding: 3rem; border-radius: 24px;
       box-shadow: 9px 9px 16px var(--shadow-dark), -9px -9px 16px var(--shadow-light);
+      transition: all 0.3s ease;
     }
     .form-group { margin-bottom: 1.5rem; }
-    .form-group label {
-      display: block;
-      font-size: 0.8rem;
-      font-weight: 800;
-      color: var(--text-light);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-bottom: 0.8rem;
-    }
-    .form-group input,
-    .form-group textarea {
-      width: 100%;
-      padding: 1rem 1.2rem;
-      font-family: var(--font-main);
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: var(--text-main);
-      background: var(--bg);
-      border: none;
-      border-radius: 12px;
+    .form-group label { display: block; font-size: 0.8rem; font-weight: 800; color: var(--text-light); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.8rem; }
+    .form-group input, .form-group textarea {
+      width: 100%; padding: 1rem 1.2rem; font-family: var(--font-main); font-size: 0.95rem; font-weight: 600; color: var(--text-main); background: var(--bg); border: none; border-radius: 12px;
       box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
-      outline: none;
-      transition: box-shadow 0.2s;
-      resize: none;
+      outline: none; transition: box-shadow 0.2s, background 0.3s ease, color 0.3s ease; resize: none;
     }
-    .form-group input:focus,
-    .form-group textarea:focus { 
-      box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light); 
-    }
+    .form-group input:focus, .form-group textarea:focus { box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light); }
     .form-group textarea { height: 140px; }
     
     .form-submit {
-      width: 100%;
-      padding: 1rem;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      font-family: var(--font-main);
-      font-size: 1rem;
-      font-weight: 800;
-      cursor: pointer;
-      border-radius: 50px;
+      width: 100%; padding: 1rem; background: var(--accent); color: #fff; border: none; font-family: var(--font-main); font-size: 1rem; font-weight: 800; cursor: pointer; border-radius: 50px;
       box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
       transition: all 0.2s;
     }
     .form-submit:hover { opacity: 0.9; transform: translateY(-2px); }
     .form-submit:active { box-shadow: inset 4px 4px 8px rgba(0,0,0,0.2); transform: translateY(0); }
 
-    .form-success, .form-error {
-      text-align: center;
-      padding: 1rem;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 0.95rem;
-      margin-top: 1.5rem;
-      box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
-    }
+    .form-success, .form-error { text-align: center; padding: 1rem; border-radius: 12px; font-weight: 600; font-size: 0.95rem; margin-top: 1.5rem; box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); }
     .form-success { color: #2f855a; }
     .form-error { color: #c53030; }
 
     /* ─── FOOTER ─── */
-    footer {
-      padding: 3rem max(5%, calc(50vw - 550px));
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: var(--text-light);
-      box-shadow: inset 0 10px 15px -10px rgba(0,0,0,0.05);
-    }
+    footer { padding: 3rem max(5%, calc(50vw - 550px)); display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; font-weight: 700; color: var(--text-light); box-shadow: inset 0 10px 15px -10px rgba(0,0,0,0.05); }
 
     @media (max-width: 968px) {
       .nav-links { display: none; }
       .hero { padding: 7rem max(1.5rem, calc(50vw - 550px)) 4rem; min-height: auto; gap: 4rem; }
-      .hero-top { grid-template-columns: 1fr; text-align: center; }
+      .hero-header { flex-direction: column; gap: 1.5rem; align-items: center; justify-content: center;}
+      .hero-top { grid-template-columns: 1fr; text-align: center; gap: 2rem;}
       .hero-left { align-items: center; }
       .hero-desc { text-align: center; }
       .hero-bottom { grid-template-columns: 1fr; }
@@ -732,8 +572,33 @@
 
   <section class="hero">
     <div class="hero-top">
-      <div class="hero-left">
+      
+      <!-- EN-TÊTE DU HERO (Badge + Bouton Theme) -->
+      <div class="hero-header">
         <div class="hero-tag">Disponible pour alternance</div>
+        
+        <!-- BOUTON PILULE MODE JOUR/NUIT -->
+        <label class="theme-switch" aria-label="Changer le thème">
+          <input type="checkbox" id="theme-checkbox">
+          <div class="switch-track">
+            <span class="switch-text day-text">MODE CLAIR</span>
+            <span class="switch-text night-text">MODE SOMBRE</span>
+            <div class="switch-handle">
+              <!-- Icône Soleil -->
+              <svg class="handle-sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="4"></circle>
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+              </svg>
+              <!-- Icône Lune -->
+              <svg class="handle-moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+              </svg>
+            </div>
+          </div>
+        </label>
+      </div>
+
+      <div class="hero-left">
         <h1>Evan<br><em>Morboeuf</em></h1>
         <p class="hero-desc">
           Apprenti en BTS SIO option SISR, passionné par l'administration des systèmes et réseaux. Curieux et polyvalent, avec une solide expérience terrain acquise lors de plusieurs stages en entreprise.
@@ -744,29 +609,28 @@
         </div>
       </div>
       
-      <!-- AVATAR DU HÉROS AVEC DIALOGUE -->
       <div class="hero-avatar-wrapper" id="avatar-wrapper">
         <div class="speech-bubble" id="bubble"></div>
         <div class="avatar-container">
           <svg id="avatar-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="50" cy="50" r="42" fill="#e2e8f0" />
-            <circle cx="50" cy="48" r="38" fill="#ffffff" />
-            <path d="M 15 50 Q 15 15 50 15 Q 85 15 85 50 Z" fill="#00118F" opacity="0.15" />
+            <circle cx="50" cy="50" r="42" fill="var(--shadow-dark)" style="transition: fill 0.3s ease;" />
+            <circle cx="50" cy="48" r="38" fill="var(--shadow-light)" style="transition: fill 0.3s ease;" />
+            <path d="M 15 50 Q 15 15 50 15 Q 85 15 85 50 Z" fill="var(--accent)" opacity="0.15" style="transition: fill 0.3s ease;" />
             
-            <circle cx="37" cy="45" r="8" fill="#f1f5f9" />
-            <circle class="pupil" cx="37" cy="45" r="3.5" fill="#00118F" />
-            <circle cx="63" cy="45" r="8" fill="#f1f5f9" />
-            <circle class="pupil" cx="63" cy="45" r="3.5" fill="#00118F" />
+            <circle cx="37" cy="45" r="8" fill="var(--avatar-eye)" style="transition: fill 0.3s ease;" />
+            <circle class="pupil" cx="37" cy="45" r="3.5" fill="var(--accent)" style="transition: fill 0.3s ease;" />
+            <circle cx="63" cy="45" r="8" fill="var(--avatar-eye)" style="transition: fill 0.3s ease;" />
+            <circle class="pupil" cx="63" cy="45" r="3.5" fill="var(--accent)" style="transition: fill 0.3s ease;" />
             
-            <path id="smile" d="M 42 62 Q 50 68 58 62" stroke="#334155" stroke-width="3" stroke-linecap="round" fill="none" />
-            <ellipse id="talk-mouth" cx="50" cy="64" rx="4" ry="6" fill="#334155" />
+            <path id="smile" d="M 42 62 Q 50 68 58 62" stroke="var(--avatar-mouth)" stroke-width="3" stroke-linecap="round" fill="none" style="transition: stroke 0.3s ease;" />
+            <ellipse id="talk-mouth" cx="50" cy="64" rx="4" ry="6" fill="var(--avatar-mouth)" style="transition: fill 0.3s ease;" />
 
             <g id="hero-hand">
-              <path d="M 65 95 Q 90 85 85 65" stroke="#e2e8f0" stroke-width="12" stroke-linecap="round" fill="none" />
-              <path d="M 65 95 Q 90 85 85 65" stroke="#ffffff" stroke-width="8" stroke-linecap="round" fill="none" />
-              <circle cx="85" cy="65" r="9" fill="#e2e8f0" />
-              <circle cx="85" cy="65" r="7" fill="#ffffff" />
-              <path d="M 78 60 L 75 52 M 85 56 L 85 45 M 92 60 L 95 52" stroke="#cbd5e1" stroke-width="2.5" stroke-linecap="round" />
+              <path d="M 65 95 Q 90 85 85 65" stroke="var(--shadow-dark)" stroke-width="12" stroke-linecap="round" fill="none" style="transition: stroke 0.3s ease;" />
+              <path d="M 65 95 Q 90 85 85 65" stroke="var(--shadow-light)" stroke-width="8" stroke-linecap="round" fill="none" style="transition: stroke 0.3s ease;" />
+              <circle cx="85" cy="65" r="9" fill="var(--shadow-dark)" style="transition: fill 0.3s ease;" />
+              <circle cx="85" cy="65" r="7" fill="var(--shadow-light)" style="transition: fill 0.3s ease;" />
+              <path d="M 78 60 L 75 52 M 85 56 L 85 45 M 92 60 L 95 52" stroke="var(--text-light)" stroke-width="2.5" stroke-linecap="round" style="transition: stroke 0.3s ease;" />
             </g>
           </svg>
         </div>
@@ -1048,7 +912,6 @@
     <div class="section-label"><span>Contact</span></div>
     
     <div class="contact-wrapper">
-      
       <div class="contact-text">
         <h2 class="section-title">Parlons de votre projet</h2>
         <p>Je suis ouvert à toute opportunité : alternance, stage, ou échange autour des métiers du réseau et des systèmes. N'hésitez pas à me contacter par email ou via LinkedIn.</p>
@@ -1057,36 +920,33 @@
         </div>
         
         <div class="contact-avatar-wrapper" id="contact-avatar-wrapper">
-          <!-- BULLE DE DIALOGUE POUR L'AVATAR DE CONTACT -->
           <div class="speech-bubble" style="top: -40px; right: -80px; max-width: 250px;">Merci ! Je vous répondrai par mail dans les plus brefs délais. 💬</div>
           
           <div class="contact-avatar-container">
             <svg id="contact-avatar-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="50" cy="50" r="42" fill="#e2e8f0" />
-              <circle cx="50" cy="48" r="38" fill="#ffffff" />
-              <path d="M 15 50 Q 15 15 50 15 Q 85 15 85 50 Z" fill="#00118F" opacity="0.15" />
+              <circle cx="50" cy="50" r="42" fill="var(--shadow-dark)" style="transition: fill 0.3s ease;" />
+              <circle cx="50" cy="48" r="38" fill="var(--shadow-light)" style="transition: fill 0.3s ease;" />
+              <path d="M 15 50 Q 15 15 50 15 Q 85 15 85 50 Z" fill="var(--accent)" opacity="0.15" style="transition: fill 0.3s ease;" />
               
-              <circle class="contact-normal-eye" cx="35" cy="45" r="8" fill="#f1f5f9" />
-              <circle class="contact-pupil" cx="35" cy="45" r="3.5" fill="#00118F" />
-              
-              <circle class="contact-normal-eye" cx="65" cy="45" r="8" fill="#f1f5f9" />
-              <circle class="contact-pupil" cx="65" cy="45" r="3.5" fill="#00118F" />
+              <circle class="contact-normal-eye" cx="35" cy="45" r="8" fill="var(--avatar-eye)" style="transition: fill 0.3s ease;" />
+              <circle class="contact-pupil" cx="35" cy="45" r="3.5" fill="var(--accent)" style="transition: fill 0.3s ease;" />
+              <circle class="contact-normal-eye" cx="65" cy="45" r="8" fill="var(--avatar-eye)" style="transition: fill 0.3s ease;" />
+              <circle class="contact-pupil" cx="65" cy="45" r="3.5" fill="var(--accent)" style="transition: fill 0.3s ease;" />
 
-              <path class="contact-happy-eye" d="M 29 46 Q 35 38 41 46" stroke="#00118F" stroke-width="3" stroke-linecap="round" fill="none" />
-              <path class="contact-happy-eye" d="M 59 46 Q 65 38 71 46" stroke="#00118F" stroke-width="3" stroke-linecap="round" fill="none" />
+              <path class="contact-happy-eye" d="M 29 46 Q 35 38 41 46" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" fill="none" style="transition: stroke 0.3s ease;" />
+              <path class="contact-happy-eye" d="M 59 46 Q 65 38 71 46" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" fill="none" style="transition: stroke 0.3s ease;" />
               
-              <path id="contact-normal-mouth" d="M 42 62 Q 50 68 58 62" stroke="#334155" stroke-width="3" stroke-linecap="round" fill="none" />
-              <circle id="contact-typing-mouth" cx="50" cy="64" r="3" fill="#334155" />
+              <path id="contact-normal-mouth" d="M 42 62 Q 50 68 58 62" stroke="var(--avatar-mouth)" stroke-width="3" stroke-linecap="round" fill="none" style="transition: stroke 0.3s ease;" />
+              <circle id="contact-typing-mouth" cx="50" cy="64" r="3" fill="var(--avatar-mouth)" style="transition: fill 0.3s ease;" />
 
               <g id="contact-thinking-hand">
-                <circle cx="65" cy="72" r="11" fill="#e2e8f0" />
-                <circle cx="65" cy="72" r="9" fill="#f8fafc" />
-                <path d="M 60 70 L 65 65 L 70 70" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round" fill="none" />
+                <circle cx="65" cy="72" r="11" fill="var(--shadow-dark)" style="transition: fill 0.3s ease;" />
+                <circle cx="65" cy="72" r="9" fill="var(--shadow-light)" style="transition: fill 0.3s ease;" />
+                <path d="M 60 70 L 65 65 L 70 70" stroke="var(--text-light)" stroke-width="2" stroke-linecap="round" fill="none" style="transition: stroke 0.3s ease;" />
               </g>
             </svg>
           </div>
         </div>
-
       </div>
 
       <div class="contact-card">
@@ -1126,6 +986,14 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>
+    /* =========================================
+       GESTION DU MODE SOMBRE (Initialisation)
+       ========================================= */
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+
     /* =========================================
        INITIALISATION EMAILJS & FORMULAIRE
        ========================================= */
@@ -1182,10 +1050,16 @@
     });
 
     /* =========================================
-       SCRIPTS DES AVATARS INTERACTIFS
+       SCRIPTS DES AVATARS & ÉVÉNEMENTS
        ========================================= */
     document.addEventListener('DOMContentLoaded', () => {
       
+      // Synchronisation de la checkbox avec le thème sauvegardé
+      const themeCheckbox = document.getElementById('theme-checkbox');
+      if (savedTheme === 'dark' && themeCheckbox) {
+        themeCheckbox.checked = true;
+      }
+
       /* --- AVATAR DU HÉROS --- */
       const heroWrapper = document.getElementById('avatar-wrapper');
       const heroAvatar = document.getElementById('avatar-svg');
@@ -1230,6 +1104,21 @@
           if (!isTalking) {
             const randomMsg = dialogues[Math.floor(Math.random() * dialogues.length)];
             speak(randomMsg, false); 
+          }
+        });
+      }
+
+      /* --- GESTION DU BOUTON MODE SOMBRE --- */
+      if(themeCheckbox) {
+        themeCheckbox.addEventListener('change', (e) => {
+          if (e.target.checked) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+            speak("Qui a éteint la lumière ?", false); 
+          } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+            speak("Ah, on y voit plus clair !", false); 
           }
         });
       }
