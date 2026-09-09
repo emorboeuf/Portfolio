@@ -161,10 +161,49 @@
     .btn-secondary:hover { color: var(--accent); transform: translateY(-2px); }
     .btn-secondary:active { box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); transform: translateY(0); }
 
-    .hero-avatar {
+    /* --- AVATAR HERO & DIALOGUES --- */
+    .hero-avatar-wrapper {
+      position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: all 0.3s ease;
+    }
+    
+    .hero-avatar-wrapper:hover {
+      transform: scale(1.02);
+    }
+
+    .speech-bubble {
+      position: absolute;
+      top: -30px;
+      right: -30px;
+      background: #ffffff;
+      color: var(--accent);
+      padding: 12px 20px;
+      border-radius: 20px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      max-width: 200px;
+      text-align: center;
+      box-shadow: 4px 4px 12px rgba(0,0,0,0.08);
+      opacity: 0;
+      transform: translateY(15px) scale(0.9);
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 10;
+      pointer-events: none; 
+    }
+
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 30px;
+      border-width: 10px 10px 0;
+      border-style: solid;
+      border-color: #ffffff transparent transparent transparent;
     }
 
     .avatar-container {
@@ -183,6 +222,51 @@
       width: 220px;
       height: 220px;
       transition: transform 0.1s ease-out;
+      overflow: visible;
+    }
+
+    /* Animations du SVG Hero */
+    #hero-hand {
+      transform-origin: 65px 95px;
+      transform: translateY(40px) rotate(30deg);
+      opacity: 0;
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
+    }
+
+    #talk-mouth {
+      opacity: 0;
+      transform-origin: 50px 64px; 
+    }
+    #smile { transition: opacity 0.2s; }
+
+    .hero-avatar-wrapper.is-talking .speech-bubble {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    .hero-avatar-wrapper.is-talking #smile { opacity: 0; }
+    .hero-avatar-wrapper.is-talking #talk-mouth {
+      opacity: 1;
+      animation: chatter 0.15s infinite alternate; 
+    }
+
+    .hero-avatar-wrapper.is-waving #hero-hand {
+      transform: translateY(0) rotate(0deg);
+      opacity: 1;
+      animation: wave 1.5s ease-in-out 0.2s;
+    }
+
+    @keyframes wave {
+      0% { transform: rotate(0deg); }
+      20% { transform: rotate(25deg); }
+      40% { transform: rotate(-15deg); }
+      60% { transform: rotate(25deg); }
+      80% { transform: rotate(-15deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    @keyframes chatter {
+      0% { transform: scaleY(1); }
+      100% { transform: scaleY(0.2); }
     }
 
     .hero-bottom {
@@ -449,7 +533,7 @@
       font-weight: 800;
     }
 
-    /* ─── CONTACT (Mis à jour avec Avatar) ─── */
+    /* ─── CONTACT ─── */
     .contact-wrapper {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -478,11 +562,10 @@
     .contact-meta-item { font-size: 0.95rem; font-weight: 700; color: var(--text-light); }
     .contact-meta-item a { color: var(--accent); text-decoration: none; }
 
-    /* L'avatar de Contact centré en bas */
     .contact-avatar-wrapper {
       display: flex;
       justify-content: center;
-      margin-top: 4rem; /* Repousse l'avatar vers le bas */
+      margin-top: 4rem; 
       margin-bottom: 2rem;
     }
 
@@ -503,7 +586,6 @@
       transition: transform 0.1s ease-out;
     }
 
-    /* Animations du visage Contact */
     .contact-normal-eye, .contact-pupil, #contact-normal-mouth { transition: opacity 0.2s; }
     .contact-happy-eye, #contact-typing-mouth { opacity: 0; transition: opacity 0.2s; }
     
@@ -529,7 +611,6 @@
       opacity: 1;
     }
 
-    /* Formulaire */
     .contact-card { 
       background: var(--bg); 
       padding: 3rem; 
@@ -654,9 +735,10 @@
         </div>
       </div>
       
-      <div class="hero-avatar">
+      <!-- AVATAR DU HÉROS AVEC DIALOGUE -->
+      <div class="hero-avatar-wrapper" id="avatar-wrapper">
+        <div class="speech-bubble" id="bubble"></div>
         <div class="avatar-container">
-          <!-- AVATAR HEROS (YEUX NORMAUX) -->
           <svg id="avatar-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
             <circle cx="50" cy="50" r="42" fill="#e2e8f0" />
             <circle cx="50" cy="48" r="38" fill="#ffffff" />
@@ -664,11 +746,19 @@
             
             <circle cx="37" cy="45" r="8" fill="#f1f5f9" />
             <circle class="pupil" cx="37" cy="45" r="3.5" fill="#00118F" />
-            
             <circle cx="63" cy="45" r="8" fill="#f1f5f9" />
             <circle class="pupil" cx="63" cy="45" r="3.5" fill="#00118F" />
             
-            <path d="M 42 62 Q 50 68 58 62" stroke="#334155" stroke-width="3" stroke-linecap="round" fill="none" />
+            <path id="smile" d="M 42 62 Q 50 68 58 62" stroke="#334155" stroke-width="3" stroke-linecap="round" fill="none" />
+            <ellipse id="talk-mouth" cx="50" cy="64" rx="4" ry="6" fill="#334155" />
+
+            <g id="hero-hand">
+              <path d="M 65 95 Q 90 85 85 65" stroke="#e2e8f0" stroke-width="12" stroke-linecap="round" fill="none" />
+              <path d="M 65 95 Q 90 85 85 65" stroke="#ffffff" stroke-width="8" stroke-linecap="round" fill="none" />
+              <circle cx="85" cy="65" r="9" fill="#e2e8f0" />
+              <circle cx="85" cy="65" r="7" fill="#ffffff" />
+              <path d="M 78 60 L 75 52 M 85 56 L 85 45 M 92 60 L 95 52" stroke="#cbd5e1" stroke-width="2.5" stroke-linecap="round" />
+            </g>
           </svg>
         </div>
       </div>
@@ -950,7 +1040,6 @@
     
     <div class="contact-wrapper">
       
-      <!-- COLONNE GAUCHE (Texte + Avatar) -->
       <div class="contact-text">
         <h2 class="section-title">Parlons de votre projet</h2>
         <p>Je suis ouvert à toute opportunité : alternance, stage, ou échange autour des métiers du réseau et des systèmes. N'hésitez pas à me contacter par email ou via LinkedIn.</p>
@@ -958,7 +1047,6 @@
           <div class="contact-meta-item"><a href="https://linkedin.com" target="_blank">Voir mon profil LinkedIn →</a></div>
         </div>
         
-        <!-- AVATAR DE CONTACT (Centré en bas de colonne) -->
         <div class="contact-avatar-wrapper">
           <div class="contact-avatar-container">
             <svg id="contact-avatar-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -989,7 +1077,6 @@
 
       </div>
 
-      <!-- COLONNE DROITE (Formulaire) -->
       <div class="contact-card">
         <form id="contact-form">
           <div class="form-group">
@@ -1031,7 +1118,7 @@
        INITIALISATION EMAILJS & FORMULAIRE
        ========================================= */
     emailjs.init('fuy7vA4Pntsub0CkZ');
-    let isContactHappy = false; // Variable partagée avec l'animation
+    let isContactHappy = false; 
 
     document.getElementById('contact-form').addEventListener('submit', function(e) {
       e.preventDefault();
@@ -1058,7 +1145,6 @@
           btn.textContent = '✉ Envoyer le message';
           btn.disabled = false;
 
-          /* --- DECLENCHEMENT DU SOURIRE (SUCCÈS) --- */
           const contactAvatar = document.getElementById('contact-avatar-svg');
           if(contactAvatar) {
             isContactHappy = true;
@@ -1066,7 +1152,6 @@
             contactAvatar.classList.add('is-success');
             contactAvatar.style.transform = `translate(0px, 0px) rotate(0deg)`;
             
-            // Le sourire dure 4 secondes avant de reprendre le suivi souris
             setTimeout(() => {
               isContactHappy = false;
               contactAvatar.classList.remove('is-success');
@@ -1086,15 +1171,59 @@
     document.addEventListener('DOMContentLoaded', () => {
       
       /* --- AVATAR DU HÉROS --- */
+      const heroWrapper = document.getElementById('avatar-wrapper');
       const heroAvatar = document.getElementById('avatar-svg');
+      const heroBubble = document.getElementById('bubble');
       const heroPupils = heroAvatar ? heroAvatar.querySelectorAll('.pupil') : [];
+
+      let isTalking = false;
+
+      const dialogues = [
+        "Je cherche activement une alternance d'un an pour la rentrée !",
+        "N'hésite pas à télécharger mon CV un peu plus bas 📄",
+        "Regardez mes projets en détail 👇",
+        "Je recherche aussi un CDD ou CDI !",
+        "Tu peux me contacter via le formulaire en bas 👇"
+      ];
+
+      function speak(text, withWave = false) {
+        if (isTalking) return; 
+        isTalking = true;
+
+        heroBubble.textContent = text;
+        heroWrapper.classList.add('is-talking');
+        if (withWave) heroWrapper.classList.add('is-waving');
+
+        setTimeout(() => {
+          heroWrapper.classList.remove('is-talking');
+          heroWrapper.classList.remove('is-waving');
+          isTalking = false;
+        }, 3500);
+      }
+
+      window.addEventListener('load', () => {
+        if(heroWrapper) {
+          setTimeout(() => {
+            speak("Salut ! Bienvenue sur mon portfolio 👋", true); 
+          }, 600);
+        }
+      });
+
+      if(heroWrapper) {
+        heroWrapper.addEventListener('click', () => {
+          if (!isTalking) {
+            const randomMsg = dialogues[Math.floor(Math.random() * dialogues.length)];
+            speak(randomMsg, false); 
+          }
+        });
+      }
 
       /* --- AVATAR DE CONTACT --- */
       const contactAvatar = document.getElementById('contact-avatar-svg');
       const contactPupils = contactAvatar ? contactAvatar.querySelectorAll('.contact-pupil') : [];
       const contactInputs = document.querySelectorAll('#contact-form input, #contact-form textarea');
 
-      // 1. GESTION DES MOUVEMENTS DE SOURIS (Pour les 2 avatars)
+      // GESTION DES MOUVEMENTS DE SOURIS (Pour les 2 avatars)
       document.addEventListener('mousemove', (e) => {
         
         // Mouvement du Héros
@@ -1115,7 +1244,7 @@
           heroAvatar.style.transform = `translate(${tiltX}px, ${tiltY}px) rotate(${tiltX * 0.4}deg)`;
         }
 
-        // Mouvement du Contact (Sauf s'il est en train de sourire/valider)
+        // Mouvement du Contact 
         if (contactAvatar && contactPupils.length > 0 && !isContactHappy) {
           const cRect = contactAvatar.getBoundingClientRect();
           const cCenterX = cRect.left + cRect.width / 2;
@@ -1134,7 +1263,7 @@
         }
       });
 
-      // 2. GESTION DU FOCUS SUR LE FORMULAIRE (Mode "Écoute/Réflexion")
+      // GESTION DU FOCUS SUR LE FORMULAIRE
       if (contactAvatar) {
         contactInputs.forEach(input => {
           input.addEventListener('focus', () => {
