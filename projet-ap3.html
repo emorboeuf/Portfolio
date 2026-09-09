@@ -223,6 +223,12 @@
       .nav-logo { font-size: 1.1rem; }
     }
   </style>
+  <script>
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  </script>
 </head>
 <body>
 
