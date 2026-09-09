@@ -52,7 +52,6 @@
       z-index: 100;
       background: rgba(248, 250, 252, 0.85);
       backdrop-filter: blur(12px);
-      /* Centrage pour grands écrans avec max-width virtuel de 1100px */
       padding: 0 max(5%, calc(50vw - 550px));
       height: 70px;
       display: flex;
@@ -79,14 +78,21 @@
 
     /* ─── HERO ─── */
     .hero {
-      padding-top: 80px;
+      padding-top: 120px;
       min-height: 100vh;
-      display: grid;
-      grid-template-columns: 5fr 4fr;
-      align-items: center;
-      /* Centrage pour grands écrans */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5rem;
       padding-left: max(5%, calc(50vw - 550px));
       padding-right: max(5%, calc(50vw - 550px));
+      padding-bottom: 4rem;
+    }
+
+    .hero-top {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      align-items: center;
       gap: 4rem;
     }
 
@@ -155,23 +161,50 @@
     .btn-secondary:hover { color: var(--accent); transform: translateY(-2px); }
     .btn-secondary:active { box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); transform: translateY(0); }
 
-    .hero-right {
+    .hero-avatar {
       display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
+      justify-content: center;
+      align-items: center;
     }
+
+    .avatar-container {
+      width: 320px;
+      height: 320px;
+      background: var(--bg);
+      border-radius: 50%;
+      box-shadow: inset 12px 12px 24px var(--shadow-dark), inset -12px -12px 24px var(--shadow-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    #avatar-svg {
+      width: 220px;
+      height: 220px;
+      transition: transform 0.1s ease-out;
+    }
+
+    .hero-bottom {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+    }
+
     .hero-stat {
       background: var(--bg);
       border-radius: 20px;
-      padding: 1.5rem 2rem;
+      padding: 2rem;
       box-shadow: 7px 7px 14px var(--shadow-dark), -7px -7px 14px var(--shadow-light);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
-    .stat-num { font-weight: 800; font-size: 2.5rem; color: var(--text-main); line-height: 1; }
-    .stat-label { font-size: 0.9rem; font-weight: 700; color: var(--text-light); margin-top: 0.3rem; }
+    .stat-num { font-weight: 900; font-size: 2.5rem; color: var(--text-main); line-height: 1.2; margin-bottom: 0.5rem; }
+    .stat-label { font-size: 1rem; font-weight: 700; color: var(--text-light); line-height: 1.4; }
 
     /* ─── SECTIONS ─── */
     section { 
-      /* Centrage pour grands écrans */
       padding: 6rem max(5%, calc(50vw - 550px)); 
     }
 
@@ -416,12 +449,18 @@
       font-weight: 800;
     }
 
-    /* ─── CONTACT ─── */
+    /* ─── CONTACT (Mis à jour avec Avatar) ─── */
     .contact-wrapper {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 5rem;
       align-items: start;
+    }
+    
+    .contact-text {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
     }
     .contact-text .section-title { margin-bottom: 1.5rem; }
     .contact-text p {
@@ -435,12 +474,62 @@
       display: flex;
       flex-direction: column;
       gap: 0.8rem;
-      margin-top: 2rem;
     }
     .contact-meta-item { font-size: 0.95rem; font-weight: 700; color: var(--text-light); }
     .contact-meta-item a { color: var(--accent); text-decoration: none; }
 
-    /* Form */
+    /* L'avatar de Contact centré en bas */
+    .contact-avatar-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-top: 4rem; /* Repousse l'avatar vers le bas */
+      margin-bottom: 2rem;
+    }
+
+    .contact-avatar-container {
+      width: 170px;
+      height: 170px;
+      background: var(--bg);
+      border-radius: 50%;
+      box-shadow: inset 8px 8px 16px var(--shadow-dark), inset -8px -8px 16px var(--shadow-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #contact-avatar-svg {
+      width: 120px;
+      height: 120px;
+      transition: transform 0.1s ease-out;
+    }
+
+    /* Animations du visage Contact */
+    .contact-normal-eye, .contact-pupil, #contact-normal-mouth { transition: opacity 0.2s; }
+    .contact-happy-eye, #contact-typing-mouth { opacity: 0; transition: opacity 0.2s; }
+    
+    #contact-thinking-hand {
+      transform: translateY(20px) rotate(15deg);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #contact-avatar-svg.is-typing #contact-thinking-hand {
+      transform: translateY(0) rotate(0deg);
+      opacity: 1;
+    }
+    #contact-avatar-svg.is-typing #contact-normal-mouth { opacity: 0; }
+    #contact-avatar-svg.is-typing #contact-typing-mouth { opacity: 1; }
+
+    #contact-avatar-svg.is-success .contact-normal-eye, 
+    #contact-avatar-svg.is-success .contact-pupil, 
+    #contact-avatar-svg.is-success #contact-normal-mouth { opacity: 0; }
+    #contact-avatar-svg.is-success .contact-happy-eye { opacity: 1; }
+    #contact-avatar-svg.is-success #contact-thinking-hand {
+      transform: translateY(-15px);
+      opacity: 1;
+    }
+
+    /* Formulaire */
     .contact-card { 
       background: var(--bg); 
       padding: 3rem; 
@@ -520,10 +609,13 @@
       box-shadow: inset 0 10px 15px -10px rgba(0,0,0,0.05);
     }
 
-    @media (max-width: 860px) {
+    @media (max-width: 968px) {
       .nav-links { display: none; }
-      .hero { grid-template-columns: 1fr; padding: 7rem max(1.5rem, calc(50vw - 550px)) 4rem; min-height: auto; gap: 3rem; }
-      .hero-right { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+      .hero { padding: 7rem max(1.5rem, calc(50vw - 550px)) 4rem; min-height: auto; gap: 4rem; }
+      .hero-top { grid-template-columns: 1fr; text-align: center; }
+      .hero-left { align-items: center; }
+      .hero-desc { text-align: center; }
+      .hero-bottom { grid-template-columns: 1fr; }
       section { padding: 4rem max(1.5rem, calc(50vw - 550px)); }
       .about-grid { grid-template-columns: 1fr; gap: 3rem; }
       .list-row { grid-template-columns: 1fr; gap: 1rem; padding: 1.5rem; }
@@ -542,35 +634,58 @@
       <a href="#about">À propos</a>
       <a href="#formation">Formation</a>
       <a href="#experiences">Expériences</a>
-      <a href="#projets">Projets</a> <a href="#documents">Documents</a>
+      <a href="#projets">Projets</a> 
+      <a href="#documents">Documents</a>
       <a href="#contact">Contact</a>
     </div>
   </nav>
 
   <section class="hero">
-    <div class="hero-left">
-      <div class="hero-tag">Disponible pour alternance</div>
-      <h1>Evan<br><em>Morboeuf</em></h1>
-      <p class="hero-desc">
-        Apprenti en BTS SIO option SISR, passionné par l'administration des systèmes et réseaux. Curieux et polyvalent, avec une solide expérience terrain acquise lors de plusieurs stages en entreprise.
-      </p>
-      <div class="hero-actions">
-        <a href="#contact" class="btn btn-primary">Me contacter</a>
-        <a href="#experiences" class="btn btn-secondary">Mes expériences</a>
+    <div class="hero-top">
+      <div class="hero-left">
+        <div class="hero-tag">Disponible pour alternance</div>
+        <h1>Evan<br><em>Morboeuf</em></h1>
+        <p class="hero-desc">
+          Apprenti en BTS SIO option SISR, passionné par l'administration des systèmes et réseaux. Curieux et polyvalent, avec une solide expérience terrain acquise lors de plusieurs stages en entreprise.
+        </p>
+        <div class="hero-actions">
+          <a href="#contact" class="btn btn-primary">Me contacter</a>
+          <a href="#experiences" class="btn btn-secondary">Mes expériences</a>
+        </div>
+      </div>
+      
+      <div class="hero-avatar">
+        <div class="avatar-container">
+          <!-- AVATAR HEROS (YEUX NORMAUX) -->
+          <svg id="avatar-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="42" fill="#e2e8f0" />
+            <circle cx="50" cy="48" r="38" fill="#ffffff" />
+            <path d="M 15 50 Q 15 15 50 15 Q 85 15 85 50 Z" fill="#00118F" opacity="0.15" />
+            
+            <circle cx="37" cy="45" r="8" fill="#f1f5f9" />
+            <circle class="pupil" cx="37" cy="45" r="3.5" fill="#00118F" />
+            
+            <circle cx="63" cy="45" r="8" fill="#f1f5f9" />
+            <circle class="pupil" cx="63" cy="45" r="3.5" fill="#00118F" />
+            
+            <path d="M 42 62 Q 50 68 58 62" stroke="#334155" stroke-width="3" stroke-linecap="round" fill="none" />
+          </svg>
+        </div>
       </div>
     </div>
-    <div class="hero-right">
+
+    <div class="hero-bottom">
       <div class="hero-stat">
         <div class="stat-num">7</div>
-        <div class="stat-label">Expériences professionnelles</div>
+        <div class="stat-label">Expériences<br>professionnelles</div>
       </div>
       <div class="hero-stat">
         <div class="stat-num">BTS SIO</div>
-        <div class="stat-label">Option SISR — en apprentissage</div>
+        <div class="stat-label">Option SISR —<br>en apprentissage</div>
       </div>
       <div class="hero-stat">
         <div class="stat-num">SISR</div>
-        <div class="stat-label">Spécialité Systèmes & Réseaux</div>
+        <div class="stat-label">Spécialité<br>Systèmes & Réseaux</div>
       </div>
     </div>
   </section>
@@ -762,7 +877,6 @@
         </ul>
       </div>
     </div>
-
   </section>
 
   <section id="projets">
@@ -770,39 +884,26 @@
     <h2 class="section-title" style="margin-bottom:3rem">Déploiements & Infrastructures</h2>
     
     <div class="projects-grid">
-      
       <div class="project-card">
         <h3 class="project-title">CFA EPFC (AP4)</h3>
-        <div class="project-tech">
-        </div>
+        <div class="project-tech"></div>
         <p class="project-desc">Mise en place d'une infrastructure réseau virtualisée pour le logiciel de gestion d'enquête du site Excellence Pro Franche-Comté</p>
-       <a href="projet-ap4.html" class="project-link">
-  Lire les détails du projet →
-</a>
+       <a href="projet-ap4.html" class="project-link">Lire les détails du projet →</a>
       </div>
 
       <div class="project-card">
         <h3 class="project-title">Infrastructure réseau pour la journée santé et citoyenneté (AP3)</h3>
-        <div class="project-tech">
-          
-        </div>
+        <div class="project-tech"></div>
         <p class="project-desc">Conception d'une infrastructure réseau pour un événement de santé et de citoyenneté.</p>
-       <a href="projet-ap3.html" class="project-link">
-  Lire les détails du projet →
-</a>
+       <a href="projet-ap3.html" class="project-link">Lire les détails du projet →</a>
       </div>
 
       <div class="project-card">
         <h3 class="project-title">Homelab (projet perso)</h3>
-        <div class="project-tech">
-        
-        </div>
+        <div class="project-tech"></div>
         <p class="project-desc">Environnement de test virtualisé dédié à ma veille technique et à l'auto-formation. Expérimentations en administration Linux, conteneurisation Docker, sécurité, et rédaction de procédures techniques.</p>
-       <a href="projet-homelab.html" class="project-link">
-  Lire les détails du projet →
-</a>
+       <a href="projet-homelab.html" class="project-link">Lire les détails du projet →</a>
       </div>
-
     </div>
   </section>
 
@@ -810,7 +911,6 @@
     <div class="section-label"><span>Documents</span></div>
     <h2 class="section-title" style="margin-bottom:3rem">Mes documents</h2>
     <div class="docs-grid">
-
       <a href="https://github.com/emorboeuf/Portfolio/raw/main/Documents/CV/CV%20EVAN%20MORBOEUF%20NC.pdf" download class="doc-card">
         <div class="doc-icon">📄</div>
         <div class="doc-info">  
@@ -842,21 +942,54 @@
         </div>
         <div class="doc-dl">↓ Télécharger</div>
       </a>
-
     </div>
   </section>
 
   <section id="contact">
     <div class="section-label"><span>Contact</span></div>
+    
     <div class="contact-wrapper">
+      
+      <!-- COLONNE GAUCHE (Texte + Avatar) -->
       <div class="contact-text">
         <h2 class="section-title">Parlons de votre projet</h2>
         <p>Je suis ouvert à toute opportunité : alternance, stage, ou échange autour des métiers du réseau et des systèmes. N'hésitez pas à me contacter par email ou via LinkedIn.</p>
         <div class="contact-meta">
-          <div class="contact-meta-item"></div>
           <div class="contact-meta-item"><a href="https://linkedin.com" target="_blank">Voir mon profil LinkedIn →</a></div>
         </div>
+        
+        <!-- AVATAR DE CONTACT (Centré en bas de colonne) -->
+        <div class="contact-avatar-wrapper">
+          <div class="contact-avatar-container">
+            <svg id="contact-avatar-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="42" fill="#e2e8f0" />
+              <circle cx="50" cy="48" r="38" fill="#ffffff" />
+              <path d="M 15 50 Q 15 15 50 15 Q 85 15 85 50 Z" fill="#00118F" opacity="0.15" />
+              
+              <circle class="contact-normal-eye" cx="35" cy="45" r="8" fill="#f1f5f9" />
+              <circle class="contact-pupil" cx="35" cy="45" r="3.5" fill="#00118F" />
+              
+              <circle class="contact-normal-eye" cx="65" cy="45" r="8" fill="#f1f5f9" />
+              <circle class="contact-pupil" cx="65" cy="45" r="3.5" fill="#00118F" />
+
+              <path class="contact-happy-eye" d="M 29 46 Q 35 38 41 46" stroke="#00118F" stroke-width="3" stroke-linecap="round" fill="none" />
+              <path class="contact-happy-eye" d="M 59 46 Q 65 38 71 46" stroke="#00118F" stroke-width="3" stroke-linecap="round" fill="none" />
+              
+              <path id="contact-normal-mouth" d="M 42 62 Q 50 68 58 62" stroke="#334155" stroke-width="3" stroke-linecap="round" fill="none" />
+              <circle id="contact-typing-mouth" cx="50" cy="64" r="3" fill="#334155" />
+
+              <g id="contact-thinking-hand">
+                <circle cx="65" cy="72" r="11" fill="#e2e8f0" />
+                <circle cx="65" cy="72" r="9" fill="#f8fafc" />
+                <path d="M 60 70 L 65 65 L 70 70" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round" fill="none" />
+              </g>
+            </svg>
+          </div>
+        </div>
+
       </div>
+
+      <!-- COLONNE DROITE (Formulaire) -->
       <div class="contact-card">
         <form id="contact-form">
           <div class="form-group">
@@ -894,7 +1027,11 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>
+    /* =========================================
+       INITIALISATION EMAILJS & FORMULAIRE
+       ========================================= */
     emailjs.init('fuy7vA4Pntsub0CkZ');
+    let isContactHappy = false; // Variable partagée avec l'animation
 
     document.getElementById('contact-form').addEventListener('submit', function(e) {
       e.preventDefault();
@@ -920,11 +1057,94 @@
           document.getElementById('contact-form').reset();
           btn.textContent = '✉ Envoyer le message';
           btn.disabled = false;
+
+          /* --- DECLENCHEMENT DU SOURIRE (SUCCÈS) --- */
+          const contactAvatar = document.getElementById('contact-avatar-svg');
+          if(contactAvatar) {
+            isContactHappy = true;
+            contactAvatar.classList.remove('is-typing');
+            contactAvatar.classList.add('is-success');
+            contactAvatar.style.transform = `translate(0px, 0px) rotate(0deg)`;
+            
+            // Le sourire dure 4 secondes avant de reprendre le suivi souris
+            setTimeout(() => {
+              isContactHappy = false;
+              contactAvatar.classList.remove('is-success');
+            }, 4000); 
+          }
+
         }, function() {
           error.style.display = 'block';
           btn.textContent = '✉ Envoyer le message';
           btn.disabled = false;
         });
+    });
+
+    /* =========================================
+       SCRIPTS DES AVATARS INTERACTIFS
+       ========================================= */
+    document.addEventListener('DOMContentLoaded', () => {
+      
+      /* --- AVATAR DU HÉROS --- */
+      const heroAvatar = document.getElementById('avatar-svg');
+      const heroPupils = heroAvatar ? heroAvatar.querySelectorAll('.pupil') : [];
+
+      /* --- AVATAR DE CONTACT --- */
+      const contactAvatar = document.getElementById('contact-avatar-svg');
+      const contactPupils = contactAvatar ? contactAvatar.querySelectorAll('.contact-pupil') : [];
+      const contactInputs = document.querySelectorAll('#contact-form input, #contact-form textarea');
+
+      // 1. GESTION DES MOUVEMENTS DE SOURIS (Pour les 2 avatars)
+      document.addEventListener('mousemove', (e) => {
+        
+        // Mouvement du Héros
+        if (heroAvatar && heroPupils.length > 0) {
+          const rect = heroAvatar.getBoundingClientRect();
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+          const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX);
+          
+          heroPupils.forEach((pupil, index) => {
+            const baseX = index === 0 ? 37 : 63;
+            const baseY = 45;
+            pupil.setAttribute('cx', baseX + Math.cos(angle) * 3.5);
+            pupil.setAttribute('cy', baseY + Math.sin(angle) * 3.5);
+          });
+          const tiltX = (e.clientX / window.innerWidth - 0.5) * 15;
+          const tiltY = (e.clientY / window.innerHeight - 0.5) * 15;
+          heroAvatar.style.transform = `translate(${tiltX}px, ${tiltY}px) rotate(${tiltX * 0.4}deg)`;
+        }
+
+        // Mouvement du Contact (Sauf s'il est en train de sourire/valider)
+        if (contactAvatar && contactPupils.length > 0 && !isContactHappy) {
+          const cRect = contactAvatar.getBoundingClientRect();
+          const cCenterX = cRect.left + cRect.width / 2;
+          const cCenterY = cRect.top + cRect.height / 2;
+          const cAngle = Math.atan2(e.clientY - cCenterY, e.clientX - cCenterX);
+          
+          contactPupils.forEach((pupil, index) => {
+            const baseX = index === 0 ? 35 : 65;
+            const baseY = 45;
+            pupil.setAttribute('cx', baseX + Math.cos(cAngle) * 3);
+            pupil.setAttribute('cy', baseY + Math.sin(cAngle) * 3);
+          });
+          const cTiltX = (e.clientX / window.innerWidth - 0.5) * 10;
+          const cTiltY = (e.clientY / window.innerHeight - 0.5) * 10;
+          contactAvatar.style.transform = `translate(${cTiltX}px, ${cTiltY}px) rotate(${cTiltX * 0.5}deg)`;
+        }
+      });
+
+      // 2. GESTION DU FOCUS SUR LE FORMULAIRE (Mode "Écoute/Réflexion")
+      if (contactAvatar) {
+        contactInputs.forEach(input => {
+          input.addEventListener('focus', () => {
+            if (!isContactHappy) contactAvatar.classList.add('is-typing');
+          });
+          input.addEventListener('blur', () => {
+            contactAvatar.classList.remove('is-typing');
+          });
+        });
+      }
     });
   </script>
 </body>
