@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,7 +9,7 @@
   
   <style>
     /* =========================================
-       VARIABLES DE BASE (FOND ULTRA-LUMINEUX)
+       VARIABLES DE BASE (MODE CLAIR)
        ========================================= */
     :root {
       --bg: #f8fafc; 
@@ -17,13 +17,28 @@
       --shadow-dark: #e2e8f0; 
       --font-main: 'Nunito', sans-serif;
       
-      /* COULEURS TEXTE */
       --text-main: #0f172a;  
       --text-muted: #334155; 
       --text-light: #64748b; 
       
-      /* COULEUR D'ACCENTUATION */
-      --accent: #00118F;     
+      --accent: #00118F;
+      --nav-bg: rgba(248, 250, 252, 0.85);     
+    }
+
+    /* =========================================
+       VARIABLES MODE SOMBRE
+       ========================================= */
+    [data-theme="dark"] {
+      --bg: #1e293b; 
+      --shadow-light: #28374e;
+      --shadow-dark: #141b28; 
+      
+      --text-main: #f8fafc;  
+      --text-muted: #cbd5e1; 
+      --text-light: #94a3b8; 
+      
+      --accent: #60a5fa; 
+      --nav-bg: rgba(30, 41, 59, 0.85);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -36,11 +51,13 @@
       font-size: 16px; 
       line-height: 1.6; 
       -webkit-font-smoothing: antialiased; 
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
-    /* Forcer la police sur tous les titres */
     h1, h2, h3, h4, h5, h6, .nav-logo, .doc-name {
       font-family: var(--font-main) !important;
+      color: var(--text-main);
+      transition: color 0.3s ease;
     }
 
     /* ─── NAV ─── */
@@ -48,15 +65,15 @@
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 100;
-      background: rgba(248, 250, 252, 0.85);
+      background: var(--nav-bg);
       backdrop-filter: blur(12px);
-      /* Centrage pour grands écrans calé sur le portfolio (1100px max) */
       padding: 0 max(5%, calc(50vw - 550px));
       height: 70px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+      transition: background 0.3s ease;
     }
     .nav-logo { font-weight: 800; font-size: 1.3rem; color: var(--text-main); }
     
@@ -77,13 +94,10 @@
     .btn-back:hover { color: var(--accent); transform: translateY(-2px); }
     .btn-back:active { box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); transform: translateY(0); }
 
-    /* ─── CONTENEUR PRINCIPAL ─── */
-    /* Pour la lecture, on garde une largeur max de 900px pour éviter les lignes trop longues */
     .project-page { 
       padding: 120px max(5%, calc(50vw - 450px)) 6rem; 
     }
     
-    /* ─── EN-TÊTE DU PROJET ─── */
     .project-header { margin-bottom: 3.5rem; }
     .project-header h1 { 
       font-weight: 800; 
@@ -103,14 +117,15 @@
       padding: 0.4rem 1.2rem; 
       border-radius: 12px; 
       box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+      transition: all 0.3s ease;
     }
 
-    /* ─── CONTENU ─── */
     .project-content h2 { 
       font-weight: 800; 
       font-size: 1.8rem; 
       margin: 3rem 0 1.5rem; 
       color: var(--accent); 
+      transition: color 0.3s ease;
     }
     .project-content p { 
       color: var(--text-muted); 
@@ -124,20 +139,19 @@
     .project-content ul:not(.task-list) li { color: var(--text-muted); margin-bottom: 0.8rem; font-weight: 500; line-height: 1.7; }
     .project-content ul:not(.task-list) li strong { color: var(--text-main); font-weight: 800; }
     
-    /* ─── ENCADRÉ D'ÉQUIPE / DOCUMENTATION (Creusé) ─── */
     .team-box { 
       background: var(--bg); 
       padding: 2.5rem; 
       border-radius: 24px; 
       margin: 3rem 0; 
       box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light);
+      transition: all 0.3s ease;
     }
-    .team-box h3 { font-size: 1.2rem; margin-bottom: 1rem; color: var(--accent); font-weight: 800; }
+    .team-box h3 { font-size: 1.2rem; margin-bottom: 1rem; color: var(--accent); font-weight: 800; transition: color 0.3s ease; }
     .team-box p { font-size: 1rem; margin-bottom: 0; color: var(--text-muted); }
 
-    /* ─── DOCUMENTS ─── */
-    .docs-section { margin-top: 5rem; padding-top: 4rem; border-top: 2px solid var(--shadow-dark); box-shadow: 0 -1px 0 var(--shadow-light); }
-    .docs-section h2 { font-weight: 800; font-size: 1.8rem; margin-bottom: 2rem; color: var(--accent); }
+    .docs-section { margin-top: 5rem; padding-top: 4rem; border-top: 2px solid var(--shadow-dark); box-shadow: 0 -1px 0 var(--shadow-light); transition: all 0.3s ease; }
+    .docs-section h2 { font-weight: 800; font-size: 1.8rem; margin-bottom: 2rem; color: var(--accent); transition: color 0.3s ease; }
     .docs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 2rem; }
     
     .doc-card {
@@ -149,7 +163,7 @@
       text-decoration: none;
       border-radius: 20px;
       box-shadow: 7px 7px 14px var(--shadow-dark), -7px -7px 14px var(--shadow-light);
-      transition: transform 0.2s, background 0.2s;
+      transition: transform 0.2s, background 0.3s ease, box-shadow 0.3s ease;
     }
     .doc-card:hover { transform: translateY(-4px); }
     .doc-icon {
@@ -162,18 +176,18 @@
       justify-content: center;
       font-size: 1.2rem;
       box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+      transition: all 0.3s ease;
     }
     .doc-info { flex: 1; min-width: 0; }
     .doc-name { font-size: 1rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.2rem; }
     .doc-meta { font-size: 0.85rem; color: var(--text-light); font-weight: 600; }
-    .doc-dl { flex-shrink: 0; font-size: 0.85rem; color: var(--accent); font-weight: 800; }
+    .doc-dl { flex-shrink: 0; font-size: 0.85rem; color: var(--accent); font-weight: 800; transition: color 0.3s ease; }
 
-    /* ─── CARTE REPERTOIRE COMPLET (Accent) ─── */
     .repo-card { 
       background: var(--accent); 
     }
     .repo-card:hover { 
-      background: #000c66; /* Bleu encore plus foncé au survol */
+      background: #000c66; 
     }
     .repo-card .doc-icon { 
       background: rgba(255, 255, 255, 0.15); 
@@ -183,7 +197,6 @@
     .repo-card .doc-meta { color: rgba(255, 255, 255, 0.8); }
     .repo-card .doc-dl { color: #ffffff; }
 
-    /* ─── FOOTER ─── */
     footer { 
       padding: 3rem max(5%, calc(50vw - 550px));
       display: flex; 
@@ -202,6 +215,12 @@
       .nav-logo { font-size: 1.1rem; }
     }
   </style>
+  <script>
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  </script>
 </head>
 <body>
 
@@ -241,7 +260,6 @@
       <h2>Extraits de ma base documentaire</h2>
       <div class="docs-grid">
 
-        <!-- Procédure 1 : Docker & GLPI -->
         <a href="https://github.com/emorboeuf/Portfolio/raw/main/Documents/Procedures/Installation-d'un-serveur-GLPI.pdf" download class="doc-card">
           <div class="doc-icon">🐳</div>
           <div class="doc-info">  
@@ -251,7 +269,6 @@
           <div class="doc-dl">↓ Télécharger (PDF)</div>
         </a>
 
-        <!-- Procédure 2 : Dépannage Linux -->
         <a href="https://github.com/emorboeuf/Portfolio/raw/main/Documents/Procedures/R%C3%A9initialisation-du-mot-de-passe-via-le-GRUB.pdf" download class="doc-card">
           <div class="doc-icon">🐧</div>
           <div class="doc-info">  
@@ -261,7 +278,6 @@
           <div class="doc-dl">↓ Télécharger (PDF)</div>
         </a>
 
-        <!-- Procédure 3 : Sécurité SSH -->
         <a href="https://github.com/emorboeuf/Portfolio/raw/main/Documents/Procedures/Protection-SSH-avec-Fail2Ban.pdf" download class="doc-card">
           <div class="doc-icon">🛡️</div>
           <div class="doc-info">  
@@ -271,7 +287,6 @@
           <div class="doc-dl">↓ Télécharger (PDF)</div>
         </a>
 
-        <!-- BOUTON VERS LE REPERTOIRE COMPLET -->
         <a href="https://github.com/emorboeuf/Portfolio/tree/main/Documents/Procedures" target="_blank" class="doc-card repo-card">
           <div class="doc-icon">📂</div>
           <div class="doc-info">  
