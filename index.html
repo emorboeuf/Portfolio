@@ -176,6 +176,7 @@
       transform: scale(1.02);
     }
 
+    /* Classe commune pour les bulles de dialogue */
     .speech-bubble {
       position: absolute;
       top: -30px;
@@ -461,7 +462,7 @@
       padding: 0.3rem 0.8rem;
       border-radius: 50px;
       font-weight: 800;
-      box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+      box-shadow: inset 3px 3px 6px var(--shadow-dark), -3px -3px 6px var(--shadow-light);
     }
     .project-desc {
       color: var(--text-muted);
@@ -562,11 +563,19 @@
     .contact-meta-item { font-size: 0.95rem; font-weight: 700; color: var(--text-light); }
     .contact-meta-item a { color: var(--accent); text-decoration: none; }
 
+    /* Conteneur de l'avatar de contact + Bulle */
     .contact-avatar-wrapper {
+      position: relative; /* Permet le positionnement de la bulle absolue */
       display: flex;
       justify-content: center;
       margin-top: 4rem; 
       margin-bottom: 2rem;
+    }
+
+    /* Apparition de la bulle quand le wrapper a la classe is-success */
+    .contact-avatar-wrapper.is-success .speech-bubble {
+      opacity: 1;
+      transform: translateY(0) scale(1);
     }
 
     .contact-avatar-container {
@@ -1047,7 +1056,10 @@
           <div class="contact-meta-item"><a href="https://linkedin.com" target="_blank">Voir mon profil LinkedIn →</a></div>
         </div>
         
-        <div class="contact-avatar-wrapper">
+        <div class="contact-avatar-wrapper" id="contact-avatar-wrapper">
+          <!-- BULLE DE DIALOGUE POUR L'AVATAR DE CONTACT -->
+          <div class="speech-bubble" style="top: -40px; right: -80px; max-width: 250px;">Merci ! Je vous répondrai par mail dans les plus brefs délais. 💬</div>
+          
           <div class="contact-avatar-container">
             <svg id="contact-avatar-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
               <circle cx="50" cy="50" r="42" fill="#e2e8f0" />
@@ -1146,15 +1158,19 @@
           btn.disabled = false;
 
           const contactAvatar = document.getElementById('contact-avatar-svg');
-          if(contactAvatar) {
+          const contactWrapper = document.getElementById('contact-avatar-wrapper');
+          
+          if(contactAvatar && contactWrapper) {
             isContactHappy = true;
             contactAvatar.classList.remove('is-typing');
             contactAvatar.classList.add('is-success');
+            contactWrapper.classList.add('is-success');
             contactAvatar.style.transform = `translate(0px, 0px) rotate(0deg)`;
             
             setTimeout(() => {
               isContactHappy = false;
               contactAvatar.classList.remove('is-success');
+              contactWrapper.classList.remove('is-success');
             }, 4000); 
           }
 
