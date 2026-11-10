@@ -104,6 +104,41 @@
       transition: color 0.2s;
     }
     .nav-links a:hover { color: var(--accent); }
+	
+	.nav-links a {
+      position: relative;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-light);
+      text-decoration: none;
+      padding-bottom: 6px;
+      transition: color 0.2s;
+    }
+    
+    .nav-links a:hover { 
+      color: var(--accent); 
+    }
+
+    /* Trait sous le lien actif */
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 3px;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a.active {
+      color: var(--accent);
+    }
+
+    .nav-links a.active::after {
+      width: 100%;
+    }
 
     /* ─── HERO ─── */
     .hero {
@@ -975,7 +1010,6 @@
               
               <path id="contact-normal-mouth" d="M 42 62 Q 50 68 58 62" stroke="var(--avatar-mouth)" stroke-width="3" stroke-linecap="round" fill="none" style="transition: stroke 0.3s ease;" />
               <circle id="contact-typing-mouth" cx="50" cy="64" r="3" fill="var(--avatar-mouth)" style="transition: fill 0.3s ease;" />
-
               <g id="contact-thinking-hand">
                 <circle cx="65" cy="72" r="11" fill="var(--shadow-dark)" style="transition: fill 0.3s ease;" />
                 <circle cx="65" cy="72" r="9" fill="var(--shadow-light)" style="transition: fill 0.3s ease;" />
@@ -1218,6 +1252,38 @@
         });
       }
     });
+	
+	// --- DÉTECTION DE SECTION ACTIVE (SCROLLSPY) ---
+      const sections = document.querySelectorAll('section[id]');
+      const navLinks = document.querySelectorAll('.nav-links a');
+
+      function updateActiveNav() {
+        const scrollPosition = window.scrollY + 150; // Décalage pour anticiper la barre de nav
+
+        sections.forEach(section => {
+          const sectionTop = section.offsetTop;
+          const sectionHeight = section.offsetHeight;
+          const sectionId = section.getAttribute('id');
+
+          if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+            navLinks.forEach(link => {
+              link.classList.remove('active');
+              if (link.getAttribute('href') === `#${sectionId}`) {
+                link.classList.add('active');
+              }
+            });
+          }
+        });
+
+        // Si on est tout en haut (dans le Hero), on retire la sélection des sections
+        if (window.scrollY < 200) {
+          navLinks.forEach(link => link.classList.remove('active'));
+        }
+      }
+
+      window.addEventListener('scroll', updateActiveNav);
+      updateActiveNav();
+	
   </script>
 </body>
 </html>
