@@ -182,84 +182,58 @@
       box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light);
     }
 
-    /* Modal (Infos détaillées) */
-    #modal-overlay {
+    /* Panneau Latéral (Side Panel) */
+    #side-panel {
       position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(5px);
-      display: none;
-      justify-content: center;
-      align-items: center;
+      top: 0; right: 0;
+      width: 380px; height: 100vh;
+      background: var(--bg);
+      box-shadow: -10px 0 30px rgba(0,0,0,0.05);
+      border-left: 2px solid var(--shadow-dark);
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
       z-index: 100;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-
-    #modal {
-      background: var(--bg);
-      padding: 2rem;
-      border-radius: 24px;
-      box-shadow: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light);
-      max-width: 400px;
-      width: 90%;
-      transform: translateY(20px);
-      transition: transform 0.3s;
-    }
-
-    #modal.show {
-      transform: translateY(0);
-    }
-
-    #modal-overlay.show {
+      padding: 3rem 2rem;
+      box-sizing: border-box;
       display: flex;
-      opacity: 1;
+      flex-direction: column;
     }
 
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
+    #side-panel.show {
+      transform: translateX(0);
     }
 
-    .modal-title {
-      font-weight: 800;
-      font-size: 1.25rem;
+    .panel-close {
+      position: absolute;
+      top: 1.5rem; right: 1.5rem;
+      background: none; border: none;
+      font-size: 1.5rem; font-weight: bold;
+      color: var(--text-muted); cursor: pointer;
+    }
+
+    .panel-close:hover {
+      color: var(--text-main);
+    }
+
+    .panel-title {
+      font-size: 1.6rem; font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .panel-subtitle {
+      font-size: 0.85rem; font-weight: 800;
       color: var(--accent);
-    }
-
-    .modal-close {
-      cursor: pointer;
-      font-weight: 800;
-      font-size: 1.2rem;
-      background: var(--bg);
-      border: none;
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      box-shadow: 3px 3px 6px var(--shadow-dark), -3px -3px 6px var(--shadow-light);
-      color: var(--text-muted);
-    }
-
-    .modal-close:active {
-      box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
-    }
-
-    .info-row {
-      margin-bottom: 1rem;
-      font-size: 0.95rem;
-    }
-    .info-label {
-      font-weight: 800;
-      color: var(--text-light);
-      font-size: 0.8rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      display: block;
-      margin-bottom: 0.2rem;
+      margin-bottom: 2rem;
     }
-    .info-value {
-      font-weight: 700;
+
+    .panel-body {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--text-muted);
     }
 
     /* Contrôles de Zoom */
@@ -407,15 +381,12 @@
     </div>
   </div>
 
-  <!-- Modal -->
-  <div id="modal-overlay" onclick="if(event.target===this) closeModal()">
-    <div id="modal">
-      <div class="modal-header">
-        <div class="modal-title" id="modal-title">Titre</div>
-        <button class="modal-close" onclick="closeModal()">×</button>
-      </div>
-      <div id="modal-content"></div>
-    </div>
+  <!-- Panneau Latéral -->
+  <div id="side-panel">
+    <button class="panel-close" onclick="closeModal()">×</button>
+    <div class="panel-title" id="panel-title">Titre</div>
+    <div class="panel-subtitle" id="panel-subtitle">OS | IP</div>
+    <div class="panel-body" id="panel-body">Rôle</div>
   </div>
 
   <script>
@@ -495,34 +466,20 @@
       }
     };
 
-    // --- LOGIQUE MODAL ---
+    // --- LOGIQUE PANNEAU LATÉRAL ---
     function openModal(nodeId) {
       const data = nodeData[nodeId];
       if (!data) return;
       
-      document.getElementById('modal-title').innerText = data.title;
-      document.getElementById('modal-content').innerHTML = `
-        <div class="info-row">
-          <span class="info-label">Adresse IP / Réseau</span>
-          <span class="info-value">${data.ip}</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Système / Technologie</span>
-          <span class="info-value">${data.os}</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Rôle / Fonction</span>
-          <span class="info-value">${data.role}</span>
-        </div>
-      `;
+      document.getElementById('panel-title').innerText = data.title;
+      document.getElementById('panel-subtitle').innerText = `${data.os} | ${data.ip}`;
+      document.getElementById('panel-body').innerText = data.role;
       
-      document.getElementById('modal-overlay').classList.add('show');
-      setTimeout(() => document.getElementById('modal').classList.add('show'), 10);
+      document.getElementById('side-panel').classList.add('show');
     }
 
     function closeModal() {
-      document.getElementById('modal').classList.remove('show');
-      setTimeout(() => document.getElementById('modal-overlay').classList.remove('show'), 300);
+      document.getElementById('side-panel').classList.remove('show');
     }
 
     // --- LOGIQUE ZOOM & PAN (Déplacement) ---
