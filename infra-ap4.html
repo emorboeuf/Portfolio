@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visualiseur Interactif - Infrastructure Réseau</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --shadow-light: #ffffff;
+      --shadow-dark: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #334155;
+      --text-light: #94a3b8;
+      --accent: #00118F;
+      --font-main: 'Nunito', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      font-family: var(--font-main);
+      color: var(--text-muted);
+      margin: 0;
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+
+    /* Container global du visualiseur */
+    .viewer-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 1000px;
+      height: 700px;
+      background: var(--bg);
+      border-radius: 24px;
+      box-shadow: 9px 9px 16px var(--shadow-dark), -9px -9px 16px var(--shadow-light);
+      overflow: hidden;
+      display: flex;
+    }
+
+    /* Zone de la carte (Viewport) qui écoute les événements de la souris */
+    .viewport {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      cursor: grab;
+    }
+    
+    .viewport:active { cursor: grabbing; }
+
+    /* Calque contenant la carte qui subit le Zoom et le Pan */
+    .map-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1200px; /* Taille fixe de la carte virtuelle */
+      height: 800px;
+      transform-origin: 0 0; /* Important pour le calcul du zoom vers la souris */
+      will-change: transform;
+    }
+
+    /* SVG pour l'arrière plan : Zones et Lignes de connexion */
+    .map-bg {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+    }
+
+    /* Style des lignes de connexion */
+    .link-line {
+      fill: none;
+      stroke: var(--text-light);
+      stroke-width: 2.5;
+      stroke-dasharray: 6 6;
+      opacity: 0.6;
+    }
+
+    /* Style des zones (cercles) */
+    .zone-circle {
+      fill: none;
+      stroke: var(--shadow-dark);
+      stroke-width: 2;
+      stroke-dasharray: 10 10;
+    }
+    .zone-text {
+      fill: var(--text-light);
+      font-size: 1.1rem;
+      font-weight: 800;
+      text-anchor: middle;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* Noeuds (Equipements) */
+    .node {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      z-index: 10;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .node:hover {
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    .node-icon-wrapper {
+      width: 64px;
+      height: 64px;
+      background: var(--bg);
+      border-radius: 18px;
+      box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--accent);
+      margin-bottom: 10px;
+      transition: all 0.2s ease;
+    }
+
+    .node:active .node-icon-wrapper {
+      box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+    }
+
+    .node-icon-wrapper svg {
+      width: 32px;
+      height: 32px;
+      fill: currentColor;
+    }
+
+    .node-label {
+      font-weight: 800;
+      font-size: 0.85rem;
+      color: var(--text-main);
+      background: rgba(248, 250, 252, 0.85);
+      backdrop-filter: blur(4px);
+      padding: 4px 10px;
+      border-radius: 8px;
+      text-align: center;
+      white-space: nowrap;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+    }
+
+    /* Noeud spécifique :pfSense (Routeur central) */
+    .node-pfsense .node-icon-wrapper {
+      width: 76px; height: 76px;
+      border-radius: 22px;
+      color: #fff;
+      background: var(--accent);
+      box-shadow: 6px 6px 15px rgba(0, 17, 143, 0.3), -6px -6px 15px var(--shadow-light);
+    }
+
+    /* Panneau d'information latéral */
+    .info-panel {
+      position: absolute;
+      top: 0; right: -350px;
+      width: 320px; height: 100%;
+      background: rgba(248, 250, 252, 0.95);
+      backdrop-filter: blur(12px);
+      box-shadow: -4px 0 20px rgba(0,0,0,0.08);
+      padding: 2.5rem 2rem;
+      box-sizing: border-box;
+      transition: right 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .info-panel.open { right: 0; }
+
+    .info-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-top: 0; margin-bottom: 0.5rem;
+    }
+
+    .info-subtitle {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 1.5rem;
+    }
+
+    .info-desc {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 15px; right: 20px;
+      background: none; border: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: var(--text-light);
+      transition: color 0.2s;
+    }
+    .close-btn:hover { color: var(--accent); }
+
+    /* Boutons de contrôle (Zoom) */
+    .controls {
+      position: absolute;
+      bottom: 25px; left: 25px;
+      display: flex; gap: 12px;
+      z-index: 10;
+    }
+
+    .btn-control {
+      width: 44px; height: 44px;
+      border-radius: 50%; border: none;
+      background: var(--bg);
+      color: var(--text-main);
+      font-size: 1.3rem; font-weight: bold;
+      cursor: pointer;
+      box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s ease;
+    }
+    .btn-control:hover { color: var(--accent); transform: translateY(-2px); }
+    .btn-control:active { transform: translateY(0); box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); }
+
+  </style>
+</head>
+<body>
+
+  <div class="viewer-wrapper">
+    
+    <!-- Zone d'affichage (Viewport) -->
+    <div class="viewport" id="viewport">
+      
+      <!-- Container transformé (Zoom/Pan) -->
+      <div class="map-container" id="mapContainer">
+        
+        <!-- ARRIÈRE PLAN SVG : ZONES ET LIGNES -->
+        <svg class="map-bg" width="1200" height="800" xmlns="http://www.w3.org/2000/svg">
+          
+          <!-- ZONES (Cercles en pointillés) -->
+          <!-- LAN -->
+          <circle cx="250" cy="240" r="170" class="zone-circle" />
+          <text x="250" y="55" class="zone-text">Zone LAN</text>
+
+          <!-- DMZ -->
+          <circle cx="940" cy="300" r="230" class="zone-circle" />
+          <text x="940" y="55" class="zone-text">Zone DMZ</text>
+
+          <!-- BACKUP -->
+          <circle cx="250" cy="600" r="130" class="zone-circle" />
+          <text x="250" y="450" class="zone-text">Zone Backup</text>
+
+          <!-- WAN -->
+          <circle cx="600" cy="700" r="110" class="zone-circle" />
+          <text x="600" y="570" class="zone-text">WAN (Extérieur)</text>
+
+          <!-- LIGNES DE CONNEXION -->
+          <!-- pfSense vers LAN -->
+          <line x1="600" y1="400" x2="180" y2="200" class="link-line" stroke="#3b82f6" /> 
+          <line x1="600" y1="400" x2="320" y2="280" class="link-line" stroke="#3b82f6" />
+          
+          <!-- pfSense vers Backup (Flux HTTPS) -->
+          <line x1="600" y1="400" x2="250" y2="600" class="link-line" stroke-dasharray="10 5" stroke="#10b981" />
+
+          <!-- pfSense vers HAProxy (DMZ) -->
+          <line x1="600" y1="400" x2="820" y2="300" class="link-line" stroke="#f59e0b" />
+
+          <!-- HAProxy vers les autres serveurs de la DMZ -->
+          <line x1="820" y1="300" x2="980" y2="150" class="link-line" stroke="#64748b" />
+          <line x1="820" y1="300" x2="980" y2="250" class="link-line" stroke="#64748b" />
+          <line x1="820" y1="300" x2="980" y2="350" class="link-line" stroke="#64748b" />
+          <line x1="820" y1="300" x2="980" y2="450" class="link-line" stroke="#64748b" />
+
+          <!-- pfSense vers Client ASIO (WAN) -->
+          <line x1="600" y1="400" x2="600" y2="680" class="link-line" stroke="#ef4444" />
+        </svg>
+
+        <!-- NOEUDS INTERACTIFS HTML -->
+        
+        <!-- CENTRE : pfSense -->
+        <div class="node node-pfsense" style="top: 400px; left: 600px;" data-title="Routeur pfSense" data-sub="pfSense 2.8.0" data-desc="IPs: 192.168.0.254 (DMZ), 192.168.1.254 (LAN), 192.168.2.254 (BACKUP), 172.20.11.209 (WAN). Règles: Filtrage strict, ports 80, 443, 22.">
+          <div class="node-icon-wrapper">
+            <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12v4.7c0 4.67-3.13 8.97-7 10.1-3.87-1.13-7-5.43-7-10.1V6.3l7-3.12zM12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 2c1.65 0 3 1.35 3 3s-1.35 3-3 3-3-1.35-3-3 1.35-3 3-3z"/></svg>
+          </div>
+          <div class="node-label">pfSense</div>
+        </div>
+
+        <!-- ZONE LAN -->
+        <div class="node" style="top: 200px; left: 180px;" data-title="MySQL Server" data-sub="Debian 13 | LAN" data-desc="Logiciel: MySQL 8.0.32. Réseau: LAN (192.168.1.0/24). Rôle: Base de données isolée et sécurisée.">
+          <div class="node-icon-wrapper">
+            <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 5v14c0 1.66-4.03 3-9 3s-9-1.34-9-3V5"/><ellipse cx="12" cy="12" rx="9" ry="3"/><ellipse cx="12" cy="19" rx="9" ry="3"/></svg>
+          </div>
+          <div class="node-label">MySQL Server</div>
+        </div>
+
+        <div class="node" style="top: 280px; left: 320px;" data-title="Windows Dev" data-sub="Windows | LAN" data-desc="Réseau: LAN (192.168.1.0/24). Rôle: Machine de développement (Flux RDP entrant autorisé).">
+          <div class="node-icon-wrapper">
+            <svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 10h8M8 18h2"/></svg>
+          </div>
+          <div class="node-label">Windows Dev</div>
+        </div>
+
+        <!-- ZONE BACKUP -->
+        <div class="node" style="top: 600px; left: 250px;" data-title="Proxmox Backup Server" data-sub="BACKUP" data-desc="Réseau: BACKUP (192.168.2.0/24). Rôle: Sauvegarde quotidienne (Flux HTTPS), conservation min. 15 jours des VM.">
+          <div class="node-icon-wrapper">
+            <svg viewBox="0 0 24 24"><path d="M19 8H5c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-8c0-1.1-.9-2-2-2zm-7 9l-4-4h3V9h2v4h3l-4 4z"/></svg>
+          </div>
+          <div class="node-label">Proxmox Backup</div>
+        </div>
+
+        <!-- CLIENT (WAN) -->
+        <div class="node" style="top: 680px; left: 600px;" data-title="ASIO Client" data-sub="WAN" data-desc="Réseau: WAN (172.20.11.200-209). Rôle: Accès distant (HTTP/RDP) simulant un utilisateur externe.">
+          <div class="node-icon-wrapper">
+            <svg viewBox="0 0 24 24"><path d="M20 18c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z"/></svg>
+          </div>
+          <div class="node-label">Client ASIO</div>
+        </div>
+
+        <!-- ZONE DMZ -->
+        <div class="node" style="top: 300px; left: 820px;" data-title="HAProxy Server" data-sub="Debian 13 | DMZ (192.168.0.0/24)" data-desc="Rôle: Haute Disponibilité, Loadbalancing. Répartit le trafic entrant vers les serveurs web.">
+          <div class="node-icon-wrapper">
+            <svg viewBox="0 0 24 24"><path d="M10 3H4v6h6V3zm9 0h-6v6h6V3zM10 15H4v6h6v-6zm9 0h-6v6h6v-6z"/><path d="M10 12h9M7 9v6" stroke="currentColor" stroke-width="2"/></svg>
+          </div>
+          <div class="node-label">HAProxy</div>
+        </div>
+
+        <div class="node" style="top: 150px; left: 980px;" data-title="Web Server 1" data-sub="Debian 13 | DMZ" data-desc="Logiciels: PHP 8.4, Laravel 12. Réseau: DMZ. Traitement de l'application Excellence Pro.">
+          <div class="node-icon-wrapper">
+            <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 12h20M6 8h2M6 16h2M10 8h8M10 16h8"/></svg>
+          </div>
+          <div class="node-label">Web Server 1</div>
+        </div>
+
+        <div class="node" style="top: 250px; left: 980px;" data-title="Web Server 2" data-sub="Debian 13 | DMZ" data-desc="Logiciels: PHP 8.4, Laravel 12. Réseau: DMZ. Assure la redondance avec le Serveur 1.">
+          <div class="node-icon-wrapper">
+            <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 12h20M6 8h2M6 16h2M10 8h8M10 16h8"/></svg>
+          </div>
+          <div class="node-label">Web Server 2</div>
+        </div>
+
+        <div class="node" style="top: 350px; left: 980px;" data-title="GLPI Server" data-sub="Debian 13 | DMZ" data-desc="Logiciel: GLPI 10.0.20. Réseau: DMZ. Système de gestion de parc informatique et helpdesk.">
+          <div class="node-icon-wrapper">
+            <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 12h20M6 8h2M6 16h2M10 8h8M10 16h8"/></svg>
+          </div>
+          <div class="node-label">GLPI Server</div>
+        </div>
+
+        <div class="node" style="top: 450px; left: 980px;" data-title="Zabbix Server" data-sub="Debian 13 | DMZ" data-desc="Rôle: Supervision (HTTP/HTTPS, SSH, DB, CPU, RAM). Réseau: DMZ. Détection d'incidents et alertes.">
+          <div class="node-icon-wrapper">
+            <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 12h20M6 8h2M6 16h2M10 8h8M10 16h8"/></svg>
+          </div>
+          <div class="node-label">Zabbix Server</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Panneau d'informations latéral -->
+    <div class="info-panel" id="infoPanel">
+      <button class="close-btn" id="closePanel">×</button>
+      <h3 class="info-title" id="infoTitle">Titre de la machine</h3>
+      <div class="info-subtitle" id="infoSub">Zone du réseau</div>
+      <p class="info-desc" id="infoDesc">Description détaillée du rôle du serveur et de son fonctionnement dans l'infrastructure.</p>
+    </div>
+
+    <!-- Contrôles de Zoom -->
+    <div class="controls">
+      <button class="btn-control" id="btnZoomIn" title="Zoom +">+</button>
+      <button class="btn-control" id="btnZoomOut" title="Zoom -">-</button>
+      <button class="btn-control" id="btnReset" title="Réinitialiser" style="font-size:1.1rem;">↺</button>
+    </div>
+
+  </div>
+
+  <script>
+    // --- VARIABLES D'ÉTAT (ZOOM & PAN) ---
+    let scale = 0.8; // Dézoom initial pour tout voir
+    let panX = -100;
+    let panY = -50;
+    
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+
+    const viewport = document.getElementById('viewport');
+    const mapContainer = document.getElementById('mapContainer');
+    const infoPanel = document.getElementById('infoPanel');
+    const infoTitle = document.getElementById('infoTitle');
+    const infoSub = document.getElementById('infoSub');
+    const infoDesc = document.getElementById('infoDesc');
+
+    // Applique la transformation à la carte
+    function updateTransform() {
+      mapContainer.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+    }
+
+    // --- LOGIQUE DU ZOOM (Centré sur la souris) ---
+    function zoom(direction, mouseX = null, mouseY = null) {
+      const zoomStep = 0.15;
+      const minScale = 0.4;
+      const maxScale = 2.5;
+      const oldScale = scale;
+      
+      if (direction === 'in') scale += zoomStep;
+      if (direction === 'out') scale -= zoomStep;
+      scale = Math.min(Math.max(minScale, scale), maxScale);
+
+      // Ajustement du Pan pour zoomer vers le curseur de la souris
+      if (mouseX !== null && mouseY !== null && scale !== oldScale) {
+        const rect = viewport.getBoundingClientRect();
+        // Coordonnées de la souris par rapport au conteneur viewport
+        const x = mouseX - rect.left;
+        const y = mouseY - rect.top;
+
+        panX = x - (x - panX) * (scale / oldScale);
+        panY = y - (y - panY) * (scale / oldScale);
+      } else {
+        // Zoom classique au centre si boutons cliqués
+        const rect = viewport.getBoundingClientRect();
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        panX = centerX - (centerX - panX) * (scale / oldScale);
+        panY = centerY - (centerY - panY) * (scale / oldScale);
+      }
+      updateTransform();
+    }
+
+    document.getElementById('btnZoomIn').addEventListener('click', () => zoom('in'));
+    document.getElementById('btnZoomOut').addEventListener('click', () => zoom('out'));
+    document.getElementById('btnReset').addEventListener('click', () => {
+      scale = 0.8; panX = -100; panY = -50;
+      updateTransform();
+    });
+
+    // Zoom à la molette
+    viewport.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const direction = e.deltaY < 0 ? 'in' : 'out';
+      zoom(direction, e.clientX, e.clientY);
+    });
+
+    // --- LOGIQUE DU DÉPLACEMENT (DRAG & PAN) ---
+    viewport.addEventListener('mousedown', (e) => {
+      // On ne drague pas si on a cliqué sur un équipement
+      if (e.target.closest('.node')) return; 
+      
+      isDragging = true;
+      startX = e.clientX - panX;
+      startY = e.clientY - panY;
+      mapContainer.style.transition = 'none'; // Désactive la transition pour la fluidité
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      panX = e.clientX - startX;
+      panY = e.clientY - startY;
+      updateTransform();
+    });
+
+    window.addEventListener('mouseup', () => {
+      if(isDragging) {
+        isDragging = false;
+        mapContainer.style.transition = 'transform 0.1s ease-out'; // Réactive la transition
+      }
+    });
+
+    // --- GESTION DES CLICS SUR LES EQUIPEMENTS ---
+    const nodes = document.querySelectorAll('.node');
+    nodes.forEach(node => {
+      node.addEventListener('click', (e) => {
+        e.stopPropagation(); 
+        
+        // Injecte les données HTML dans le panneau
+        infoTitle.textContent = node.getAttribute('data-title');
+        infoSub.textContent = node.getAttribute('data-sub');
+        infoDesc.textContent = node.getAttribute('data-desc');
+        
+        // Ouvre le panneau
+        infoPanel.classList.add('open');
+      });
+    });
+
+    // Fermeture du panneau
+    document.getElementById('closePanel').addEventListener('click', () => {
+      infoPanel.classList.remove('open');
+    });
+    
+    // Fermeture si on clique dans le vide
+    viewport.addEventListener('mousedown', (e) => {
+      if (!e.target.closest('.node') && !e.target.closest('.info-panel')) {
+        infoPanel.classList.remove('open');
+      }
+    });
+
+    // Initialisation
+    updateTransform();
+  </script>
+</body>
+</html>
