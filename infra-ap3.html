@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visualiseur AP3</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --shadow-light: #ffffff;
+      --shadow-dark: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #334155;
+      --accent: #00118F;
+      
+      /* Couleurs des zones AP3 */
+      --zone-lan: rgba(251, 146, 60, 0.15); /* Orange */
+      --zone-lan-border: rgba(251, 146, 60, 0.5);
+      --zone-dmz: rgba(163, 230, 53, 0.15); /* Vert */
+      --zone-dmz-border: rgba(163, 230, 53, 0.5);
+      --zone-wan: rgba(244, 114, 182, 0.15); /* Rose */
+      --zone-wan-border: rgba(244, 114, 182, 0.5);
+      --zone-backup: rgba(148, 163, 184, 0.15); /* Gris */
+      --zone-backup-border: rgba(148, 163, 184, 0.5);
+    }
+
+    [data-theme="dark"] {
+      --bg: #1e293b;
+      --shadow-light: #28374e;
+      --shadow-dark: #141b28;
+      --text-main: #f8fafc;
+      --text-muted: #cbd5e1;
+      --accent: #60a5fa;
+    }
+
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: var(--bg);
+      font-family: 'Nunito', sans-serif;
+      color: var(--text-main);
+      user-select: none;
+    }
+
+    #canvas-container {
+      width: 100vw;
+      height: 100vh;
+      cursor: grab;
+      position: relative;
+    }
+    
+    #canvas-container:active {
+      cursor: grabbing;
+    }
+
+    #workspace {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(1);
+      width: 2000px;
+      height: 2000px;
+      transform-origin: 0 0;
+    }
+
+    /* Lignes SVG */
+    #connections {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .line {
+      stroke: var(--text-muted);
+      stroke-width: 3;
+      fill: none;
+      stroke-dasharray: 6 6;
+      opacity: 0.5;
+    }
+
+    /* Zones */
+    .zone {
+      position: absolute;
+      border-radius: 50%;
+      z-index: 0;
+      border: 3px dashed;
+    }
+
+    .zone-title {
+      position: absolute;
+      top: 30px;
+      width: 100%;
+      text-align: center;
+      font-weight: 800;
+      font-size: 1.5rem;
+      color: var(--text-main);
+      opacity: 0.7;
+    }
+
+    #zone-lan {
+      width: 600px; height: 600px;
+      top: 250px; left: 250px;
+      background: var(--zone-lan);
+      border-color: var(--zone-lan-border);
+    }
+
+    #zone-wan {
+      width: 600px; height: 600px;
+      top: 250px; left: 1150px;
+      background: var(--zone-wan);
+      border-color: var(--zone-wan-border);
+    }
+
+    #zone-backup {
+      width: 600px; height: 600px;
+      top: 1150px; left: 250px;
+      background: var(--zone-backup);
+      border-color: var(--zone-backup-border);
+    }
+
+    #zone-dmz {
+      width: 600px; height: 600px;
+      top: 1150px; left: 1150px;
+      background: var(--zone-dmz);
+      border-color: var(--zone-dmz-border);
+    }
+
+    /* Noeuds (Machines) */
+    .node {
+      position: absolute;
+      background: var(--bg);
+      border-radius: 16px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 7px 7px 14px var(--shadow-dark), -7px -7px 14px var(--shadow-light);
+      z-index: 2;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      width: 160px;
+      text-align: center;
+    }
+
+    .node:hover {
+      transform: translate(-50%, -50%) scale(1.05);
+      box-shadow: 9px 9px 18px var(--shadow-dark), -9px -9px 18px var(--shadow-light);
+    }
+
+    .node-icon {
+      width: 50px;
+      height: 50px;
+      background: var(--bg);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+      font-size: 1.5rem;
+    }
+
+    .node-title {
+      font-weight: 800;
+      font-size: 0.9rem;
+      line-height: 1.2;
+    }
+
+    .node-ip {
+      font-size: 0.75rem;
+      color: var(--accent);
+      font-weight: 700;
+      background: var(--bg);
+      padding: 4px 8px;
+      border-radius: 50px;
+      box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light);
+    }
+
+    /* Modal (Infos détaillées) */
+    #modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(5px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    #modal {
+      background: var(--bg);
+      padding: 2rem;
+      border-radius: 24px;
+      box-shadow: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light);
+      max-width: 400px;
+      width: 90%;
+      transform: translateY(20px);
+      transition: transform 0.3s;
+    }
+
+    #modal.show {
+      transform: translateY(0);
+    }
+
+    #modal-overlay.show {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-title {
+      font-weight: 800;
+      font-size: 1.25rem;
+      color: var(--accent);
+    }
+
+    .modal-close {
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 1.2rem;
+      background: var(--bg);
+      border: none;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      box-shadow: 3px 3px 6px var(--shadow-dark), -3px -3px 6px var(--shadow-light);
+      color: var(--text-muted);
+    }
+
+    .modal-close:active {
+      box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+    }
+
+    .info-row {
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+    .info-label {
+      font-weight: 800;
+      color: var(--text-light);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+    .info-value {
+      font-weight: 700;
+    }
+
+    /* Contrôles de Zoom */
+    .controls {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 15px;
+      z-index: 10;
+    }
+
+    .control-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: none;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text-main);
+      cursor: pointer;
+      box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+      display: flex; justify-content: center; align-items: center;
+    }
+
+    .control-btn:active {
+      box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Controls Zoom -->
+  <div class="controls">
+    <button class="control-btn" id="btn-zoom-out">−</button>
+    <button class="control-btn" id="btn-reset">⟲</button>
+    <button class="control-btn" id="btn-zoom-in">+</button>
+  </div>
+
+  <div id="canvas-container">
+    <div id="workspace">
+      
+      <!-- Zones -->
+      <div id="zone-lan" class="zone"><div class="zone-title">LAN (ASIO)</div></div>
+      <div id="zone-wan" class="zone"><div class="zone-title">WAN (Internet)</div></div>
+      <div id="zone-backup" class="zone"><div class="zone-title">BACKUP</div></div>
+      <div id="zone-dmz" class="zone"><div class="zone-title">DMZ</div></div>
+
+      <!-- Lignes de connexion -->
+      <svg id="connections">
+        <!-- Mikrotik vers Pare-feux (Virtuels) -->
+        <path class="line" d="M 1000 1000 L 700 700" />
+        <path class="line" d="M 1000 1000 L 1300 700" />
+        <path class="line" d="M 1000 1000 L 700 1300" />
+        <path class="line" d="M 1000 1000 L 1300 1300" />
+        
+        <!-- Sous-réseaux depuis les pare-feux de zone -->
+        <!-- LAN -->
+        <path class="line" d="M 700 700 L 500 500" />
+        <!-- WAN -->
+        <path class="line" d="M 1300 700 L 1400 450" />
+        <path class="line" d="M 1300 700 L 1400 850" />
+        <!-- DMZ -->
+        <path class="line" d="M 1300 1300 L 1300 1550" />
+        <path class="line" d="M 1300 1300 L 1550 1550" />
+        <path class="line" d="M 1300 1300 L 1550 1300" />
+        <!-- BACKUP -->
+        <path class="line" d="M 700 1300 L 450 1450" />
+      </svg>
+
+      <!-- MACHINES -->
+      
+      <!-- Centre : Mikrotik -->
+      <div class="node" style="top: 1000px; left: 1000px;" onclick="openModal('mikrotik')">
+        <div class="node-icon">🖧</div>
+        <div class="node-title">Mikrotik</div>
+        <div class="node-ip">172.20.14.31</div>
+      </div>
+
+      <!-- LAN -->
+      <div class="node" style="top: 700px; left: 700px;" onclick="openModal('fw-lan')">
+        <div class="node-icon">🧱</div>
+        <div class="node-title">Pare-feu LAN</div>
+        <div class="node-ip">192.168.50.254/24</div>
+      </div>
+      <div class="node" style="top: 500px; left: 500px;" onclick="openModal('sql-server')">
+        <div class="node-icon">🗄️</div>
+        <div class="node-title">Windows Server<br>(SQL / AD)</div>
+        <div class="node-ip">192.168.50.1</div>
+      </div>
+
+      <!-- WAN -->
+      <div class="node" style="top: 700px; left: 1300px;" onclick="openModal('fw-wan')">
+        <div class="node-icon">🧱</div>
+        <div class="node-title">Pare-feu WAN</div>
+        <div class="node-ip">172.20.4.31/16</div>
+      </div>
+      <div class="node" style="top: 450px; left: 1400px;" onclick="openModal('assoc')">
+        <div class="node-icon">💻</div>
+        <div class="node-title">Associations</div>
+        <div class="node-ip">Client Externe</div>
+      </div>
+      <div class="node" style="top: 850px; left: 1400px;" onclick="openModal('client')">
+        <div class="node-icon">📱</div>
+        <div class="node-title">Client Public</div>
+        <div class="node-ip">Client Externe</div>
+      </div>
+
+      <!-- DMZ -->
+      <div class="node" style="top: 1300px; left: 1300px;" onclick="openModal('fw-dmz')">
+        <div class="node-icon">🧱</div>
+        <div class="node-title">Pare-feu DMZ</div>
+        <div class="node-ip">192.168.51.254/24</div>
+      </div>
+      <div class="node" style="top: 1550px; left: 1300px;" onclick="openModal('web-server')">
+        <div class="node-icon">🌐</div>
+        <div class="node-title">Serveur Web / API</div>
+        <div class="node-ip">192.168.51.1</div>
+      </div>
+      <div class="node" style="top: 1550px; left: 1550px;" onclick="openModal('glpi')">
+        <div class="node-icon">🎫</div>
+        <div class="node-title">Ticketing GLPI</div>
+        <div class="node-ip">192.168.51.3</div>
+      </div>
+      <div class="node" style="top: 1300px; left: 1550px;" onclick="openModal('nextcloud')">
+        <div class="node-icon">☁️</div>
+        <div class="node-title">Nextcloud</div>
+        <div class="node-ip">192.168.51.2</div>
+      </div>
+
+      <!-- BACKUP -->
+      <div class="node" style="top: 1300px; left: 700px;" onclick="openModal('fw-backup')">
+        <div class="node-icon">🧱</div>
+        <div class="node-title">Pare-feu BACKUP</div>
+        <div class="node-ip">192.168.52.254/24</div>
+      </div>
+      <div class="node" style="top: 1450px; left: 450px;" onclick="openModal('pbs')">
+        <div class="node-icon">💾</div>
+        <div class="node-title">Proxmox Backup</div>
+        <div class="node-ip">172.20.14.32</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal-overlay" onclick="if(event.target===this) closeModal()">
+    <div id="modal">
+      <div class="modal-header">
+        <div class="modal-title" id="modal-title">Titre</div>
+        <button class="modal-close" onclick="closeModal()">×</button>
+      </div>
+      <div id="modal-content"></div>
+    </div>
+  </div>
+
+  <script>
+    // --- DONNÉES DU CAHIER DES CHARGES AP3 ---
+    const nodeData = {
+      'mikrotik': {
+        title: "Routeur Mikrotik",
+        ip: "172.20.14.31",
+        os: "RouterOS",
+        role: "Routage inter-zones et pare-feu principal. Géré via Winbox."
+      },
+      'sql-server': {
+        title: "Windows Server (BDD & AD)",
+        ip: "192.168.50.1",
+        os: "Windows Server",
+        role: "Héberge la base de données SQL Server et l'Active Directory. Application lourde en C# (.NET) via RDP sur le port 3389."
+      },
+      'web-server': {
+        title: "Serveur Web & API",
+        ip: "192.168.51.1 / 24",
+        os: "Linux (Debian/Ubuntu)",
+        role: "Héberge l'application web (Laravel). Apache/PHP 8.3 avec OpenSSL, PDO, etc. Accessible en HTTPS (443)."
+      },
+      'glpi': {
+        title: "Serveur GLPI",
+        ip: "192.168.51.3 / 25",
+        os: "Linux",
+        role: "Gestion des tickets (Ticketing), lié à l'Active Directory via LDAP pour l'authentification."
+      },
+      'nextcloud': {
+        title: "Nextcloud",
+        ip: "192.168.51.2 / 25",
+        os: "Linux",
+        role: "Hébergement cloud sécurisé (HTTPS) pour stocker les logos et images envoyés par les associations."
+      },
+      'pbs': {
+        title: "Proxmox Backup Server",
+        ip: "172.20.14.32",
+        os: "Proxmox",
+        role: "Serveur de sauvegarde automatisé. Communique avec l'hyperviseur Proxmox (172.20.14.30) pour garantir la disponibilité."
+      },
+      'assoc': {
+        title: "Associations",
+        ip: "WAN",
+        os: "N/A",
+        role: "Accèdent à l'application web publique en HTTPS pour s'inscrire et envoyer leurs fichiers."
+      },
+      'client': {
+        title: "Clients",
+        ip: "WAN",
+        os: "N/A",
+        role: "Utilisateurs accédant depuis l'extérieur à l'infrastructure publique."
+      },
+      'fw-lan': {
+        title: "Passerelle LAN",
+        ip: "192.168.50.254 / 24",
+        os: "Routage",
+        role: "Passerelle pour la zone LAN (ASIO)."
+      },
+      'fw-dmz': {
+        title: "Passerelle DMZ",
+        ip: "192.168.51.254 / 24",
+        os: "Routage",
+        role: "Passerelle pour la zone DMZ (Services Web)."
+      },
+      'fw-backup': {
+        title: "Passerelle BACKUP",
+        ip: "192.168.52.254 / 24",
+        os: "Routage",
+        role: "Passerelle isolée pour les sauvegardes."
+      },
+      'fw-wan': {
+        title: "Interface WAN",
+        ip: "172.20.4.31 / 16",
+        os: "Routage",
+        role: "Point d'entrée vers Internet."
+      }
+    };
+
+    // --- LOGIQUE MODAL ---
+    function openModal(nodeId) {
+      const data = nodeData[nodeId];
+      if (!data) return;
+      
+      document.getElementById('modal-title').innerText = data.title;
+      document.getElementById('modal-content').innerHTML = `
+        <div class="info-row">
+          <span class="info-label">Adresse IP / Réseau</span>
+          <span class="info-value">${data.ip}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Système / Technologie</span>
+          <span class="info-value">${data.os}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Rôle / Fonction</span>
+          <span class="info-value">${data.role}</span>
+        </div>
+      `;
+      
+      document.getElementById('modal-overlay').classList.add('show');
+      setTimeout(() => document.getElementById('modal').classList.add('show'), 10);
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('show');
+      setTimeout(() => document.getElementById('modal-overlay').classList.remove('show'), 300);
+    }
+
+    // --- LOGIQUE ZOOM & PAN (Déplacement) ---
+    const container = document.getElementById('canvas-container');
+    const workspace = document.getElementById('workspace');
+    
+    let scale = 0.55; 
+    let translateX = 0;
+    let translateY = 0;
+    let isDragging = false;
+    let startX, startY;
+
+    // Centrer initialement
+    function centerWorkspace() {
+      const rect = container.getBoundingClientRect();
+      translateX = (rect.width - (2000 * scale)) / 2;
+      translateY = (rect.height - (2000 * scale)) / 2;
+      updateTransform();
+    }
+
+    function updateTransform() {
+      workspace.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+    }
+
+    // Boutons de Zoom
+    document.getElementById('btn-zoom-in').addEventListener('click', () => { scale = Math.min(scale + 0.1, 1.5); updateTransform(); });
+    document.getElementById('btn-zoom-out').addEventListener('click', () => { scale = Math.max(scale - 0.1, 0.2); updateTransform(); });
+    document.getElementById('btn-reset').addEventListener('click', () => { scale = 0.55; centerWorkspace(); });
+
+    // Drag (Cliqué-Glissé)
+    container.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      startX = e.clientX - translateX;
+      startY = e.clientY - translateY;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      translateX = e.clientX - startX;
+      translateY = e.clientY - startY;
+      updateTransform();
+    });
+
+    window.addEventListener('mouseup', () => { isDragging = false; });
+    
+    // Zoom à la molette
+    container.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const zoomAmount = -e.deltaY * 0.001;
+      const newScale = Math.min(Math.max(scale + zoomAmount, 0.2), 1.5);
+      
+      const rect = container.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      
+      translateX = mouseX - (mouseX - translateX) * (newScale / scale);
+      translateY = mouseY - (mouseY - translateY) * (newScale / scale);
+      scale = newScale;
+      updateTransform();
+    });
+
+    // Initialisation
+    window.onload = centerWorkspace;
+    window.onresize = centerWorkspace;
+  </script>
+</body>
+</html>
