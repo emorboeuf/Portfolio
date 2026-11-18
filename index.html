@@ -770,8 +770,20 @@
             <span class="tag">GPO</span>
             <span class="tag">VMware ESXi</span>
             <span class="tag">Proxmox VE</span>
-            <span class="tag">Linux</span>
+            <span class="tag">Linux (Debian)</span>
             <span class="tag">Docker</span>
+          </div>
+        </div>
+        <div class="skills-group">
+          <div class="skills-group-title">Réseau & services</div>
+          <div class="skills-tags">
+            <span class="tag">VLANs</span>
+            <span class="tag">pfSense</span>
+            <span class="tag">MikroTik</span>
+            <span class="tag">HAProxy</span>
+            <span class="tag">Apache</span>
+            <span class="tag">Nextcloud</span>
+            <span class="tag">SQL Server / MySQL</span>
           </div>
         </div>
         <div class="skills-group">
@@ -781,6 +793,8 @@
             <span class="tag">CrowdStrike</span>
             <span class="tag">ESET</span>
             <span class="tag">Hornetsecurity</span>
+            <span class="tag">Fail2ban</span>
+            <span class="tag">Proxmox Backup Server</span>
             <span class="tag">Macrium Reflect</span>
           </div>
         </div>
@@ -789,6 +803,7 @@
           <div class="skills-tags">
             <span class="tag">GLPI</span>
             <span class="tag">Freshdesk</span>
+            <span class="tag">Zabbix</span>
             <span class="tag">Support N1 / N2</span>
             <span class="tag">Déploiement d'images Windows</span>
           </div>
@@ -797,6 +812,7 @@
           <div class="skills-group-title">Automatisation & documentation</div>
           <div class="skills-tags">
             <span class="tag">PowerShell</span>
+            <span class="tag">Lsyncd / Rsync</span>
             <span class="tag">Notion</span>
             <span class="tag">Obsidian</span>
             <span class="tag">Microsoft 365</span>
@@ -911,22 +927,22 @@
     <div class="projects-grid">
       <div class="project-card">
         <h3 class="project-title">CFA EPFC (AP4)</h3>
-        <div class="project-tech"><span>Virtualisation</span><span>Réseau</span><span>Projet BTS</span><!-- À COMPLÉTER : ajoute tes vraies technos, ex. <span>Proxmox</span> --></div>
-        <p class="project-desc">Conception et déploiement d'une infrastructure réseau virtualisée pour héberger le logiciel de gestion d'enquêtes du CFA Excellence Pro Franche-Comté, de la conception de l'architecture à sa mise en service.</p>
+        <div class="project-tech"><span>pfSense</span><span>HAProxy</span><span>Proxmox VE</span><span>VLANs</span><span>Zabbix</span><span>Lsyncd</span></div>
+        <p class="project-desc">Infrastructure haute disponibilité et 100 % open source pour le CFA Excellence Pro Franche-Comté, conforme aux recommandations de l'ANSSI : segmentation en 4 zones, load balancing, réplication temps réel, supervision et sauvegardes automatisées.</p>
        <a href="projet-ap4.html" class="project-link">Lire les détails du projet →</a>
       </div>
 
       <div class="project-card">
         <h3 class="project-title">Journée santé & citoyenneté (AP3)</h3>
-        <div class="project-tech"><span>Réseau</span><span>Événementiel</span><span>Projet BTS</span><!-- À COMPLÉTER : ajoute tes vraies technos, ex. <span>VLAN</span> --></div>
-        <p class="project-desc">Conception de l'infrastructure réseau d'un événement public dédié à la santé et à la citoyenneté, de l'analyse des besoins jusqu'à la solution technique proposée.</p>
+        <div class="project-tech"><span>MikroTik</span><span>Proxmox VE</span><span>Windows Server</span><span>Active Directory</span><span>Nextcloud</span></div>
+        <p class="project-desc">Infrastructure sécurisée pour centraliser la gestion d'un événement du lycée Pasteur Mont-Roland : réseau segmenté (LAN, DMZ, Backup) sur routeur MikroTik, serveurs Windows et web, cloud Nextcloud et sauvegardes conformes au RGPD.</p>
        <a href="projet-ap3.html" class="project-link">Lire les détails du projet →</a>
       </div>
 
       <div class="project-card">
         <h3 class="project-title">Homelab (projet perso)</h3>
-        <div class="project-tech"><span>Linux</span><span>Docker</span><span>Virtualisation</span><span>Sécurité</span></div>
-        <p class="project-desc">Mon labo personnel pour tester avant de déployer : administration Linux, services conteneurisés avec Docker et sécurité. Chaque manip est documentée sous forme de procédure, ce qui alimente aussi ma veille technique.</p>
+        <div class="project-tech"><span>Debian 13</span><span>Docker</span><span>Fail2ban</span><span>Auto-hébergement</span></div>
+        <p class="project-desc">Mon bac à sable pour tester, casser et reconstruire sans risque : administration Debian, services conteneurisés avec Docker, durcissement SSH avec Fail2ban. Chaque manip est documentée en procédure, consultable sur Notion.</p>
        <a href="projet-homelab.html" class="project-link">Lire les détails du projet →</a>
       </div>
     </div>
@@ -936,7 +952,7 @@
     <div class="section-label"><span>Documents</span></div>
     <h2 class="section-title" style="margin-bottom:3rem">Mes documents</h2>
     <div class="docs-grid">
-      <a href="https://github.com/emorboeuf/Portfolio/raw/main/Documents/CV/CV%20EVAN%20MORBOEUF%20NC.pdf" download class="doc-card">
+      <a href="https://github.com/emorboeuf/Portfolio/raw/main/Documents/CV/CV-EVAN-MORBOEUF.pdf" download class="doc-card">
         <div class="doc-icon">📄</div>
         <div class="doc-info">  
           <div class="doc-name">Mon CV</div>
@@ -944,18 +960,18 @@
         <div class="doc-dl">↓ Télécharger</div>
       </a>
 
-      <a href="https://github.com/emorboeuf/Portfolio/raw/main/Documents/Preuve%202%20veille.pdf" download class="doc-card">
+      <a href="https://github.com/emorboeuf/Portfolio/raw/main/Documents/Rapport-de-veille-technologique.pdf" download class="doc-card">
         <div class="doc-icon">📝</div>
         <div class="doc-info">  
-          <div class="doc-name">Preuve de ma veille technologique</div>
+          <div class="doc-name">Rapport de veille technologique</div>
         </div>
         <div class="doc-dl">↓ Télécharger</div>
       </a>
 
-      <a href="https://github.com/emorboeuf/Portfolio/raw/main/Documents/Preuve%20de%20comp%C3%A9tence%20MORBOEUF%20Evandocx.pdf" download class="doc-card">
+      <a href="https://github.com/emorboeuf/Portfolio/raw/main/Documents/Dossier-de-preuve-de-comp%C3%A9tence-evan-morboeuf.pdf" download class="doc-card">
         <div class="doc-icon">📚</div>
         <div class="doc-info">  
-          <div class="doc-name">Preuve de compétences</div>
+          <div class="doc-name">Dossier de preuve de compétences</div>
         </div>
         <div class="doc-dl">↓ Télécharger</div>
       </a>
